@@ -3,6 +3,9 @@
 -- @author Hershel Shah
 -- @brief LSP Configuation and Key Map File
 -------------------------------------------------------------------------------
+-- LSP Installer
+require("nvim-lsp-installer").setup{}
+
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 local opts = { noremap=true, silent=true }

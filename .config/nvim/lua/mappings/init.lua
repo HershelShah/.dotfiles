@@ -57,5 +57,6 @@ map('n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>', default_opts)
 
 -- Telescope Configurations
 map('n', '<leader>ff', ':Telescope find_files<CR>', default_opts)
-map('n', '<leader>fg', ':Telescope live_grep<CR>', default_opts)
-
+map('n', '<leader>fw', ':Telescope live_grep<CR>', default_opts)
+map('n', '<leader>fb', ':Telescope buffers<CR>', default_opts)
+map('n', '<leader>fh', ':Telescope help_tags<CR>', default_opts)

@@ -16,6 +16,7 @@ return require('packer').startup(function()
 
     -- LSP Plugins
     use 'neovim/nvim-lspconfig'                    -- Configurations for Nvim LSP
+    use 'williamboman/nvim-lsp-installer'          -- LSP Installer
     use 'hrsh7th/nvim-cmp'                         -- Autocompletion plugin
     use 'hrsh7th/cmp-nvim-lsp'                     -- LSP source for nvim-cmp
     use 'saadparwaiz1/cmp_luasnip'                 -- Snippets source for nvim-cmp
@@ -63,36 +64,16 @@ return require('packer').startup(function()
         'nvim-telescope/telescope.nvim',
         requires = { 'nvim-lua/plenary.nvim' }
     }
+    use 'nvim-telescope/telescope-file-browser.nvim'
     
-    -- Smart Escape
+    -- Neovim Session Management System
     use {
-        'max397574/better-escape.nvim',
+        "olimorris/persisted.nvim",
         config = function()
-            require('better_escape').setup {
-                mapping = { 'jk' },
-                timeout = vim.o.timeoutlen,
-                clear_empty_lines = false,
-                keys = '<ESC>',
-            }
+            require("persisted").setup()
         end,
     }
     
-    -- Shade
-    use {
-        'sunjon/shade.nvim',
-        config = function()
-            require('shade').setup{
-                overlay_opacity = 50,
-                opacity_step = 1,
-                keys = {
-                    brightness_up = '<C-Up>',
-                    brightness_down = '<C-Down>',
-                    toggle = '<leader>s',
-                }
-            }
-        end,
-    }
-
     -- Comment Plugin
     use 'tpope/vim-commentary'
 end)
