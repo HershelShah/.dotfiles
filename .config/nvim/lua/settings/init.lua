@@ -19,6 +19,8 @@ set.scrolloff = 10
 set.termguicolors = true
 -- Enable Relative Number
 set.relativenumber = true
+-- Enable Number
+set.number = true
 -- Enable Cursorline
 set.cursorline = true
 -- Enable hidden buffers
