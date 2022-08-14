@@ -56,7 +56,11 @@ map('n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>', default_opts)
 -- :BarbarDisable - very bad command, should never be used
 
 -- Telescope Configurations
-map('n', '<leader>ff', ':Telescope find_files<CR>', default_opts)
+map('n', '<leader>sl', ':Telescope persisted<CR>', default_opts)
+map('n', '<leader>fh', ':Telescope oldfiles<CR>', default_opts)
+map('n', '<leader>ff', ':Telescope find_files find_command=rg,--hidden,--files<CR>', default_opts)
 map('n', '<leader>fw', ':Telescope live_grep<CR>', default_opts)
 map('n', '<leader>fb', ':Telescope buffers<CR>', default_opts)
 map('n', '<leader>fh', ':Telescope help_tags<CR>', default_opts)
+map('n', '<leader>gc', ':Telescope git_commits<CR>', default_opts)
+map('n', '<leader>gb', ':Telescope git_branches<CR>', default_opts)

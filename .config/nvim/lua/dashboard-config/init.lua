@@ -34,8 +34,8 @@ db.custom_header = {
     [[]],
 }
 db.custom_center = {
-    {icon = ' ',
-    desc = 'Recently latest session                  ',
+    {icon = '  ',
+    desc = 'Recently latest session                 ',
     shortcut = 'SPC s l',
     action ='Telescope persisted'},
     {icon = '  ',
@@ -47,10 +47,6 @@ db.custom_center = {
     action = 'Telescope find_files find_command=rg,--hidden,--files',
     shortcut = 'SPC f f'},
     {icon = '  ',
-    desc ='File Browser                            ',
-    action =  'Telescope file_browser',
-    shortcut = 'SPC f b'},
-    {icon = '  ',
     desc = 'Find  word                              ',
     action = 'Telescope live_grep',
     shortcut = 'SPC f w'},
@@ -62,8 +58,4 @@ db.custom_center = {
     desc = 'Search branches                         ',
     action = 'Telescope git_branches',
     shortcut = 'SPC g b'},
-    {icon = '  ',
-    desc = 'Open Personal dotfiles                  ',
-    action = 'Telescope dotfiles path=' .. home ..'/.dotfiles',
-    shortcut = 'SPC f d'},
 }
