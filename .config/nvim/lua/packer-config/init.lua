@@ -40,6 +40,18 @@ return require('packer').startup(function()
     use 'neovim/nvim-lspconfig'                    -- Configurations for Nvim LSP
     use 'hrsh7th/nvim-cmp'                         -- Autocompletion plugin
     use 'hrsh7th/cmp-nvim-lsp'                     -- LSP source for nvim-cmp
+    use 'hrsh7th/cmp-buffer'                       -- Buffer source for nvim-cmp
+    use 'hrsh7th/cmp-path'                         -- Path source for nvim-cmp
+    use 'hrsh7th/cmp-cmdline'                      -- CMD line source for nvim-cmp
+    use 'saadparwaiz1/cmp_luasnip'
+    use 'L3MON4D3/LuaSnip'
+    use 'rafamadriz/friendly-snippets'
+    use {
+        'ray-x/lsp_signature.nvim',
+        config = function()
+            require('lsp_signature').setup({})
+        end
+    }
     use 'onsails/lspkind.nvim'                     -- Adds Pictograms to LSP
 
     -- Diagnostic Display
@@ -56,7 +68,7 @@ return require('packer').startup(function()
         config = function ()
             require('notify').setup {
                 stages = 'fade_in_slide_out',
-                timeout = 5000,
+                timeout = 3000,
             }
             vim.notify = require('notify')
         end
@@ -116,6 +128,28 @@ return require('packer').startup(function()
             require("twilight").setup({})
         end
     }
+
+    -- Display Colors
+    -- use {
+    --     'nnorcalli/nvim-colorizer.lua',
+    --     config = function()
+    --         require('colorizer').setup()
+    --     end
+    -- }
+
+    -- Vim Surround
+    use 'tpope/vim-surround'
+
+    -- Autopairs
+    use {
+        'windwp/nvim-autopairs',
+        config = function()
+            require('nvim-autopairs').setup({
+                enable_check_bracket_line = false
+            })
+        end
+    }
+
     -- Remote Work
     use {
         'chipsenkbeil/distant.nvim',

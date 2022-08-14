@@ -41,7 +41,7 @@ local on_attach = function(_, bufnr)
     vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, bufopts)
     vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
     vim.keymap.set('n', '<leader>wl', function()
-        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+        vim.notify(vim.inspect(vim.lsp.buf.list_workspace_folders()), "info")
     end, bufopts)
     vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
     vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
@@ -59,7 +59,7 @@ local lsp_flags = {
     debounce_text_changes = 150,
 }
 
--- Clangd Server
+-- Lua Server
 lspconfig['sumneko_lua'].setup{
     on_attach = on_attach,
     flags = lsp_flags,
