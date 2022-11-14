@@ -13,6 +13,8 @@ vim.g.mapleader = ' '
 -- Toggle Nvim Tree Toggle
 map('n', '<C-f>', ':NvimTreeToggle<CR>', default_opts)
 
+-- Visually format 
+
 -- Barbar Mappings
 -- Move to previous/next
 map('n', '<A-,>', '<Cmd>BufferPrevious<CR>', default_opts)

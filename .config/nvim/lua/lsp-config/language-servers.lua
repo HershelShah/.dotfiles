@@ -8,17 +8,17 @@ local mason_status_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
 local lspconfig_status_ok, lspconfig = pcall(require, "lspconfig")
 
 if not mason_status_ok then
-    vim.notify("Couldn't load Mason-LSP-Config" .. mason_lspconfig, "error")
+    vim.notify("Couldn't load Mason-LSP-Config" .. mason_lspconfig, vim.level.error)
     return
 end
 if not lspconfig_status_ok then
-    vim.notify("Couldn't load LSP-Config" .. lspconfig, "error")
+    vim.notify("Couldn't load LSP-Config" .. lspconfig, vim.level.error)
     return
 end
 
 -- Mappings
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
-local opts = { noremap=true, silent=true }
+local opts = { noremap = true, silent = true }
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
@@ -32,7 +32,7 @@ local on_attach = function(_, bufnr)
 
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
-    local bufopts = { noremap=true, silent=true, buffer=bufnr }
+    local bufopts = { noremap = true, silent = true, buffer = bufnr }
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
@@ -41,18 +41,19 @@ local on_attach = function(_, bufnr)
     vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, bufopts)
     vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
     vim.keymap.set('n', '<leader>wl', function()
-        vim.notify(vim.inspect(vim.lsp.buf.list_workspace_folders()), "info")
+        vim.notify(vim.inspect(vim.lsp.buf.list_workspace_folders()), vim.level.info)
     end, bufopts)
     vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
     vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
     vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-    vim.keymap.set('n', '<leader>f', vim.lsp.buf.formatting, bufopts)
+    vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, bufopts)
+    vim.keymap.set('v', '<leader>f', vim.lsp.buf.format, bufopts)
 end
 
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 local lsp_flags = {
     -- This is the default in Nvim 0.7+
@@ -60,14 +61,14 @@ local lsp_flags = {
 }
 
 -- Lua Server
-lspconfig['sumneko_lua'].setup{
+lspconfig['sumneko_lua'].setup {
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
     settings = {
         Lua = {
             diagnostics = {
-                globals = {"vim", "use"},
+                globals = { "vim", "use" },
             },
             workspace = {
                 library = {
@@ -80,14 +81,14 @@ lspconfig['sumneko_lua'].setup{
 }
 
 -- Jedi Language Server
-lspconfig['jedi_language_server'].setup{
+lspconfig['jedi_language_server'].setup {
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
 }
 
 -- Clangd Server
-lspconfig['clangd'].setup{
+lspconfig['clangd'].setup {
     on_attach = on_attach,
     flags = lsp_flags,
     capabilities = capabilities,
