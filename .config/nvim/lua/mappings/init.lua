@@ -13,7 +13,8 @@ vim.g.mapleader = ' '
 -- Toggle Nvim Tree Toggle
 map('n', '<C-f>', ':NvimTreeToggle<CR>', default_opts)
 
--- Visually format 
+-- Toggle TagBar Toggle
+map('n', '<C-t>', ':TagbarToggle<CR>', default_opts)
 
 -- Barbar Mappings
 -- Move to previous/next

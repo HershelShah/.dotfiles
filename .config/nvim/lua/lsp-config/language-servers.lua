@@ -6,6 +6,7 @@
 -- LSP Installer
 local mason_status_ok, mason_lspconfig = pcall(require, "mason-lspconfig")
 local lspconfig_status_ok, lspconfig = pcall(require, "lspconfig")
+local goto_preview_status_ok, goto_preview_config = pcall(require, "goto-preview")
 
 if not mason_status_ok then
     vim.notify("Couldn't load Mason-LSP-Config" .. mason_lspconfig, vim.level.error)
@@ -13,6 +14,10 @@ if not mason_status_ok then
 end
 if not lspconfig_status_ok then
     vim.notify("Couldn't load LSP-Config" .. lspconfig, vim.level.error)
+    return
+end
+if not goto_preview_status_ok then
+    vim.notify("Couldn't load goto-preview" .. goto_preview_config, vim.level.error)
     return
 end
 
@@ -38,6 +43,11 @@ local on_attach = function(_, bufnr)
     vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
     vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+    vim.keymap.set('n', 'gpd', goto_preview_config.goto_preview_definition, bufopts)
+    vim.keymap.set('n', 'gpt', goto_preview_config.goto_preview_type_definition, bufopts)
+    vim.keymap.set('n', 'gpi', goto_preview_config.goto_preview_implementation, bufopts)
+    vim.keymap.set('n', 'gP',  goto_preview_config.close_all_win, bufopts)
+    vim.keymap.set('n', 'gpr', goto_preview_config.goto_preview_references, bufopts)
     vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, bufopts)
     vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
     vim.keymap.set('n', '<leader>wl', function()

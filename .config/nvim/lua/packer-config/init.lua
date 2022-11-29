@@ -153,4 +153,7 @@ return require('packer').startup(function()
             require('goto-preview').setup {}
         end
     }
+
+    -- Add Tagbar
+    use 'preservim/tagbar'
 end)
