@@ -156,4 +156,7 @@ return require('packer').startup(function()
 
     -- Add Tagbar
     use 'preservim/tagbar'
+
+    -- Focus Window Manager
+    use { "beauwilliams/focus.nvim", config = function() require("focus").setup() end }
 end)

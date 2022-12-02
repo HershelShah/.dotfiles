@@ -1,4 +1,3 @@
-local home = os.getenv('HOME')
 local db = require('dashboard')
 db.custom_header = {
     [[ __  ___  _______  _______ .______        ______      ___       __      .___  ___.         ___      .__   __.  _______       ______   ______    _______   _______      ______   .__   __.]],

@@ -12,6 +12,7 @@ vim.g.mapleader = ' '
 
 -- Toggle Nvim Tree Toggle
 map('n', '<C-f>', ':NvimTreeToggle<CR>', default_opts)
+map('n', '<leader>sf', ':NvimTreeFindFile<CR>', default_opts)
 
 -- Toggle TagBar Toggle
 map('n', '<C-t>', ':TagbarToggle<CR>', default_opts)
@@ -67,3 +68,6 @@ map('n', '<leader>fb', ':Telescope buffers<CR>', default_opts)
 map('n', '<leader>fh', ':Telescope help_tags<CR>', default_opts)
 map('n', '<leader>gc', ':Telescope git_commits<CR>', default_opts)
 map('n', '<leader>gb', ':Telescope git_branches<CR>', default_opts)
+
+-- Focus Window Manager
+map('n', '<C-l>', ':FocusSplitNicely<CR>', { silent = true })
