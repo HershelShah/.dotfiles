@@ -6,7 +6,6 @@
 require('packer-config')
 require('settings')
 require('mappings')
-require('colorschemes-config.dracula')
 require('dashboard-config')
 require('lualine-config')
 require('lsp-config.language-servers')
