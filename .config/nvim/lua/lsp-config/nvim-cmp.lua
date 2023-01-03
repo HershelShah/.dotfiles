@@ -39,6 +39,7 @@ cmp.setup {
         { name = 'buffer' },
         { name = 'path' },
         { name = 'nvim_lua' },
+        { name = 'orgmode' },
     },
     snippet = {
         expand = function(args)

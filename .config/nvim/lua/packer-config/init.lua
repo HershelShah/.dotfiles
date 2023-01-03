@@ -73,12 +73,26 @@ return require('packer').startup(function()
     use 'nvim-telescope/telescope-file-browser.nvim'
 
     -- Neovim Session Management System
-    use {
-        "olimorris/persisted.nvim",
+    use({
+        'olimorris/persisted.nvim',
         config = function()
-            require("persisted").setup()
+            require('persisted').setup({
+                autoload = true,
+                on_autoload_no_session = function()
+                    vim.notify("No existing session to load.")
+                end,
+                should_autosave = function()
+                    if vim.bo.filetype == "dashboard" then
+                        return false
+                    end
+                    return true
+                end,
+                command = "VimLeavePre",
+                use_git_branch = true,
+            })
+            require('telescope').load_extension('persisted')
         end,
-    }
+    })
 
     -- Autopairs
     use {
@@ -150,6 +164,7 @@ return require('packer').startup(function()
             require('lsp_signature').setup({})
         end
     }
+
     -- Adds Pictograms to LSP
     use 'onsails/lspkind.nvim'
 
@@ -157,7 +172,7 @@ return require('packer').startup(function()
     use {
         'rmagatti/goto-preview',
         config = function()
-            require('goto-preview').setup {}
+            require('goto-preview').setup({})
         end
     }
 
@@ -166,4 +181,13 @@ return require('packer').startup(function()
 
     -- Focus Window Manager
     use { "beauwilliams/focus.nvim", config = function() require("focus").setup() end }
+
+    -- Adding orgmode
+    use {
+        'nvim-orgmode/orgmode',
+        config = function()
+            require('orgmode').setup_ts_grammar()
+            require('orgmode').setup({})
+        end
+    }
 end)
