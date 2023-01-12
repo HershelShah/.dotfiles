@@ -82,7 +82,7 @@ return require('packer').startup(function()
                     vim.notify("No existing session to load.")
                 end,
                 should_autosave = function()
-                    if vim.bo.filetype == "dashboard" then
+                    if vim.bo.filetype == "dashboard" or vim.bo.filetype == "bool" then
                         return false
                     end
                     return true
@@ -182,12 +182,22 @@ return require('packer').startup(function()
     -- Focus Window Manager
     use { "beauwilliams/focus.nvim", config = function() require("focus").setup() end }
 
-    -- Adding orgmode
     use {
-        'nvim-orgmode/orgmode',
+        'phaazon/mind.nvim',
+        branch = 'v2.2',
+        requires = { 'nvim-lua/plenary.nvim' },
         config = function()
-            require('orgmode').setup_ts_grammar()
-            require('orgmode').setup({})
+            require('mind').setup({})
         end
+    }
+
+    use {
+        "danymat/neogen",
+        config = function()
+            require('neogen').setup({})
+        end,
+        requires = { 'nvim-treesitter/nvim-treesitter' },
+        -- Uncomment next line if you want to follow only stable versions
+        -- tag = "*"
     }
 end)
