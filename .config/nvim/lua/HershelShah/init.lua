@@ -1,0 +1,6 @@
+require('HershelShah.packer')
+require('HershelShah.telescope')
+require('HershelShah.treesitter')
+require('HershelShah.barbar')
+require('HershelShah.lualine')
+require('HershelShah.window-picker')

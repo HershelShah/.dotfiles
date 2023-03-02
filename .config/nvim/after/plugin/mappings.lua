@@ -10,10 +10,6 @@ local default_opts = { noremap = true, silent = true }
 -- Set Leader to Space
 vim.g.mapleader = ' '
 
--- Toggle Nvim Tree Toggle
-map('n', '<C-f>', ':NvimTreeToggle<CR>', default_opts)
-map('n', '<leader>sf', ':NvimTreeFindFile<CR>', default_opts)
-
 -- Toggle TagBar Toggle
 map('n', '<C-t>', ':TagbarToggle<CR>', default_opts)
 
@@ -59,15 +55,6 @@ map('n', '<Space>bw', '<Cmd>BufferOrderByWindowNumber<CR>', default_opts)
 -- :BarbarEnable - enables barbar (enabled by default)
 -- :BarbarDisable - very bad command, should never be used
 
--- Telescope Configurations
-map('n', '<leader>sl', ':Telescope persisted<CR>', default_opts)
-map('n', '<leader>fh', ':Telescope oldfiles<CR>', default_opts)
-map('n', '<leader>ff', ':Telescope find_files find_command=rg,--hidden,--files<CR>', default_opts)
-map('n', '<leader>fw', ':Telescope live_grep<CR>', default_opts)
-map('n', '<leader>fb', ':Telescope buffers<CR>', default_opts)
-map('n', '<leader>fh', ':Telescope help_tags<CR>', default_opts)
-map('n', '<leader>gc', ':Telescope git_commits<CR>', default_opts)
-map('n', '<leader>gb', ':Telescope git_branches<CR>', default_opts)
-
 -- Focus Window Manager
 map('n', '<C-l>', ':FocusSplitNicely<CR>', { silent = true })
+
