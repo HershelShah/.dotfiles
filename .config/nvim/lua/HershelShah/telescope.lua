@@ -125,4 +125,6 @@ telescope.setup({
             }
         })
 
+require('telescope').load_extension('lsp_handlers')
 require("telescope").load_extension("file_browser")
+require('telescope').load_extension('persisted')
