@@ -1,5 +1,5 @@
 require('HershelShah.packer')
-require('HershelShah.barbar')
+require('HershelShah.bufferline')
 require('HershelShah.dashboard')
 require('HershelShah.lualine')
 require('HershelShah.telescope')

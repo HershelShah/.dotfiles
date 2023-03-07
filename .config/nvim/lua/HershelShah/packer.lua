@@ -44,7 +44,7 @@ return require('packer').startup(function()
     use {
         'numToStr/Comment.nvim',
         config = function()
-            require('comment').setup({})
+            require('Comment').setup({})
         end
     }
 
@@ -56,8 +56,9 @@ return require('packer').startup(function()
 
     -- Buffer Manager
     use {
-        'romgrk/barbar.nvim',
-        requires = { 'nvim-tree/nvim-web-devicons' }
+        'akinsho/bufferline.nvim',
+        tag = "v3.*",
+        requires = 'nvim-tree/nvim-web-devicons',
     }
 
     -- Status Line
@@ -159,4 +160,12 @@ return require('packer').startup(function()
         tag = "*"
     }
 
+    -- Lua
+    use {
+        "folke/trouble.nvim",
+        requires = "nvim-tree/nvim-web-devicons",
+        config = function()
+            require("trouble").setup({})
+        end
+    }
 end)
