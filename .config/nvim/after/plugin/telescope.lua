@@ -34,17 +34,6 @@ vim.keymap.set('n', '<leader>cbt', builtin.current_buffer_tags, {})
 vim.keymap.set('n', '<leader>r', builtin.resume, {})
 vim.keymap.set('n', '<leader>p', builtin.pickers, {})
 
--- Neovim LSP Pickers
-vim.keymap.set('n', '<leader>llr', builtin.lsp_references, {})
-vim.keymap.set('n', '<leader>lic', builtin.lsp_incoming_calls, {})
-vim.keymap.set('n', '<leader>loc', builtin.lsp_outgoing_calls, {})
-vim.keymap.set('n', '<leader>lds', builtin.lsp_document_symbols, {})
--- vim.keymap.set('n', '<leader>lws', builtin.lsp_workplace_symbols, {})
--- vim.keymap.set('n', '<leader>ldws', builtin.lsp_dynamic_workplace_symbols, {})
-vim.keymap.set('n', '<leader>d', builtin.diagnostics, {})
-vim.keymap.set('n', '<leader>li', builtin.lsp_implementations, {})
-vim.keymap.set('n', '<leader>ltd', builtin.lsp_type_definitions, {})
-
 -- Git Pickers
 vim.keymap.set('n', '<leader>gc', builtin.git_commits, {})
 vim.keymap.set('n', '<leader>gbc', builtin.git_bcommits, {})

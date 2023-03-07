@@ -99,7 +99,6 @@ return require('packer').startup(function()
                 on_autoload_no_session = function()
                     vim.notify("No existing session to load.")
                 end,
-                command = "VimLeavePre",
                 use_git_branch = true,
             })
         end,
@@ -109,7 +108,7 @@ return require('packer').startup(function()
         'echasnovski/mini.nvim',
         branch = 'stable',
         config = function()
-            require('mini.map').setup()
+            require('mini.map').setup({})
         end
     }
 
@@ -136,8 +135,8 @@ return require('packer').startup(function()
             { 'rafamadriz/friendly-snippets' },
 
             -- Adds Pictograms to LSP
-            { 'onsails/lspkind.nvim' },
-            { 'ray-x/lsp_signature.nvim' },
+            -- { 'onsails/lspkind.nvim' },
+            -- { 'ray-x/lsp_signature.nvim' },
         }
     }
 
@@ -166,6 +165,13 @@ return require('packer').startup(function()
         requires = "nvim-tree/nvim-web-devicons",
         config = function()
             require("trouble").setup({})
+        end
+    }
+
+    use {
+        'tiagovla/scope.nvim',
+        config = function ()
+            require("scope").setup({})
         end
     }
 end)

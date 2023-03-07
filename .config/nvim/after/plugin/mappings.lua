@@ -10,9 +10,6 @@ local default_opts = { noremap = true, silent = true }
 -- Set Leader to Space
 vim.g.mapleader = ' '
 
--- Toggle TagBar Toggle
-map('n', '<C-t>', ':TagbarToggle<CR>', default_opts)
-
 -- Barbar Mappings
 -- Move to previous/next
 map('n', '<A-,>', '<Cmd>BufferPrevious<CR>', default_opts)
