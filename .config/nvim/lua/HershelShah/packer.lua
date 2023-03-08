@@ -58,7 +58,7 @@ return require('packer').startup(function()
     use {
         'akinsho/bufferline.nvim',
         tag = "v3.*",
-        requires = 'nvim-tree/nvim-web-devicons',
+        requires = { 'nvim-tree/nvim-web-devicons', opt = true },
     }
 
     -- Status Line
@@ -109,6 +109,7 @@ return require('packer').startup(function()
         branch = 'stable',
         config = function()
             require('mini.map').setup({})
+            MiniMap.open()
         end
     }
 
@@ -170,7 +171,7 @@ return require('packer').startup(function()
 
     use {
         'tiagovla/scope.nvim',
-        config = function ()
+        config = function()
             require("scope").setup({})
         end
     }

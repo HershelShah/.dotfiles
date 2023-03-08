@@ -10,7 +10,7 @@ require('dashboard').setup({
             enable = true,
         },
         shortcut = {
-            { desc = ' Update', group = '@property', action = 'Packer sync', key = 'u' },
+            { desc = ' Update', group = '@property', action = 'PackerSync', key = 'u' },
             {
                 icon = ' ',
                 icon_hl = '@variable',
@@ -20,9 +20,9 @@ require('dashboard').setup({
                 key = 'f',
             },
             {
-                desc = ' Apps',
+                desc = ' Sessions',
                 group = 'DiagnosticHint',
-                action = 'Telescope app',
+                action = 'Telescope persisted',
                 key = 'a',
             },
             {

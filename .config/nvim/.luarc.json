@@ -1,6 +1,7 @@
 {
     "diagnostics.globals": [
         "use",
-        "vim"
+        "vim",
+        "MiniMap"
     ]
 }
