@@ -1,7 +1,0 @@
-require('HershelShah.packer')
-require('HershelShah.bufferline')
-require('HershelShah.dashboard')
-require('HershelShah.lualine')
-require('HershelShah.telescope')
-require('HershelShah.treesitter')
-require('HershelShah.window-picker')
