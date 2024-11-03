@@ -87,14 +87,11 @@ plugins=(
     dircycle
     dirpersist
     docker
-    fancy-ctrl-z
-    fd
     fzf
     git
     git-auto-fetch
     jsontools
     sudo
-    taskwarrior
     web-search
     z
     zsh-autosuggestions
@@ -114,11 +111,6 @@ source $ZSH/oh-my-zsh.sh
 # Preferred editor for local and remote sessions
 export EDITOR='nvim'
 alias vim='nvim'
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -129,14 +121,7 @@ alias vim='nvim'
 # For a full list of active aliases, run `alias`.
 #
 # Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
 alias get_lx106='export PATH="$PATH:$HOME/esp/xtensa-lx106-elf/bin"; export IDF_PATH=$HOME/esp/ESP8266_RTOS_SDK'
-
-## Overrides
-alias cat='ccat'
-alias less='cless'
-[[ $TERM = 'xterm-kitty' ]] && alias ssh="kitty +kitten ssh"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
