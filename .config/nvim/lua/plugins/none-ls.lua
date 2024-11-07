@@ -13,8 +13,7 @@ return {
 		mason_null_ls.setup({
 			ensure_installed = {
 				"stylua", -- lua formatter
-				"black", -- python formatter
-				"pylint", -- python linter
+				"clang-format",
 			},
 		})
 

@@ -2,7 +2,6 @@ return {
 	"echasnovski/mini.nvim",
 	version = "*",
 	config = function()
-		require("mini.animate").setup({ { scroll = { timing = 50 } } })
 		require("mini.bracketed").setup()
 		require("mini.bufremove").setup()
 		require("mini.comment").setup()
