@@ -20,7 +20,7 @@ local prompts = {
 return {
 	{
 		"CopilotC-Nvim/CopilotChat.nvim",
-		branch = "canary",
+		branch = "main",
 		dependencies = {
 			{ "nvim-telescope/telescope.nvim" },
 			{ "nvim-lua/plenary.nvim" },
@@ -37,8 +37,8 @@ return {
 				accept_diff = { normal = "<C-y>", insert = "<C-y>" },
 				yank_diff = { normal = "gmy" },
 				show_diff = { normal = "gmd" },
-				show_system_prompt = { normal = "gmp" },
-				show_user_selection = { normal = "gms" },
+				show_info = { normal = "gmp" },
+				show_context = { normal = "gms" },
 				show_help = { normal = "gmh" },
 			},
 		},
@@ -59,7 +59,7 @@ return {
 			}
 
 			chat.setup(opts)
-			require("CopilotChat.integrations.cmp").setup()
+			chat.autocomplete = true
 
 			vim.api.nvim_create_user_command("CopilotChatVisual", function(args)
 				chat.ask(args.args, { selection = select.visual })
