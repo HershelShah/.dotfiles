@@ -7,7 +7,6 @@ return {
 		require("mini.comment").setup()
 		require("mini.completion").setup()
 		require("mini.cursorword").setup()
-		require("mini.diff").setup()
 		require("mini.extra").setup()
 		require("mini.files").setup()
 		require("mini.indentscope").setup()
