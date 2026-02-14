@@ -1,0 +1,14 @@
+{
+  "name": "dotfiles",
+  "build": {
+    "dockerfile": "../Dockerfile"
+  },
+  "remoteUser": "ubuntu",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh"
+      }
+    }
+  }
+}
