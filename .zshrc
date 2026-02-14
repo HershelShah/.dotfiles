@@ -54,8 +54,7 @@ export EDITOR='nvim'
 alias vim='nvim'
 
 # Modern CLI aliases
-command -v bat >/dev/null 2>&1 && alias cat='bat --paging=never'
-command -v eza >/dev/null 2>&1 && alias ls='eza --icons' && alias ll='eza -la --icons --git' && alias tree='eza --tree --icons'
+command -v eza >/dev/null 2>&1 && alias ll='eza -la --icons --git' && alias tree='eza --tree --icons'
 alias lg='lazygit'
 
 # Use fd and bat with fzf when available
