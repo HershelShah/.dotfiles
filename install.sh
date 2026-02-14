@@ -24,6 +24,7 @@ esac
 if [[ "$NO_LINK" == false ]]; then
   link() {
     local src="$DOTFILES/$1" dest="$HOME/$1"
+    rm -rf $dest
     mkdir -p "$(dirname "$dest")"
     ln -sf "$src" "$dest"
     echo "  $1 -> $src"
