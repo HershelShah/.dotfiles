@@ -77,7 +77,7 @@ command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
 command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 
 # Warn if key tools are missing
-for _cmd in nvim starship fzf zoxide; do
+for _cmd in nvim starship fzf zoxide tmux; do
   command -v "$_cmd" >/dev/null 2>&1 || echo "[warn] $_cmd not found — run ~/.dotfiles/install.sh"
 done
 unset _cmd

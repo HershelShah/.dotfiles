@@ -31,6 +31,7 @@ if [[ "$NO_LINK" == false ]]; then
   }
   echo "Linking dotfiles from $DOTFILES"
   link .zshrc
+  link .tmux.conf
   link .gitconfig
   link .config/nvim
   link .config/starship.toml
