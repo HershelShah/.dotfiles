@@ -5,6 +5,13 @@ return {
 		"williamboman/mason.nvim",
 		{ "zapling/mason-conform.nvim", opts = {} },
 	},
+	keys = {
+		{
+			"<leader>lf",
+			function() require("conform").format({ timeout_ms = 3000, lsp_format = "fallback" }) end,
+			desc = "Format buffer",
+		},
+	},
 	opts = {
 		formatters_by_ft = {
 			lua = { "stylua" },

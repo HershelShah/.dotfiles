@@ -68,6 +68,22 @@ return {
 				miniclue.gen_clues.registers(),
 				miniclue.gen_clues.windows(),
 				miniclue.gen_clues.z(),
+
+				-- Leader group descriptions
+				{ mode = "n", keys = "<Leader>a", desc = "+avante" },
+				{ mode = "x", keys = "<Leader>a", desc = "+avante" },
+				{ mode = "n", keys = "<Leader>c", desc = "+copilot-chat" },
+				{ mode = "x", keys = "<Leader>c", desc = "+copilot-chat" },
+				{ mode = "n", keys = "<Leader>f", desc = "+find" },
+				{ mode = "n", keys = "<Leader>g", desc = "+git" },
+				{ mode = "n", keys = "<Leader>h", desc = "+hunk" },
+				{ mode = "v", keys = "<Leader>h", desc = "+hunk" },
+				{ mode = "n", keys = "<Leader>l", desc = "+lsp" },
+				{ mode = "n", keys = "<Leader>m", desc = "+mini" },
+				{ mode = "n", keys = "<Leader>n", desc = "+swap next" },
+				{ mode = "n", keys = "<Leader>p", desc = "+swap prev" },
+				{ mode = "n", keys = "<Leader>r", desc = "+rename/restart" },
+				{ mode = "n", keys = "<Leader>t", desc = "+toggle" },
 			},
 		})
 	end,
