@@ -16,7 +16,7 @@ need() { ! command -v "$1" >/dev/null 2>&1; }
 ARCH="$(uname -m)"
 case "$ARCH" in
   x86_64)  ARCH_RUST="x86_64-unknown-linux-musl"; ARCH_GO="Linux_x86_64" ;;
-  aarch64) ARCH_RUST="aarch64-unknown-linux-musl"; ARCH_GO="Linux_arm64" ;;
+  aarch64) ARCH_RUST="aarch64-unknown-linux-gnu"; ARCH_GO="Linux_arm64" ;;
   *) echo "[error] Unsupported architecture: $ARCH"; exit 1 ;;
 esac
 
@@ -116,7 +116,7 @@ if need delta; then
 fi
 if need zoxide; then
   v=$(gh_latest ajeetdsouza/zoxide); vn="${v#v}"
-  gh_tar zoxide "https://github.com/ajeetdsouza/zoxide/releases/download/${v}/zoxide-${vn}-${ARCH_RUST}.tar.gz"
+  gh_tar zoxide "https://github.com/ajeetdsouza/zoxide/releases/download/${v}/zoxide-${vn}-aarch64-unknown-linux-musl.tar.gz"
 fi
 if need eza; then
   v=$(gh_latest eza-community/eza)

@@ -25,18 +25,22 @@ return {
 					vim.keymap.set(mode, lhs, rhs, { buffer = event.buf, desc = desc })
 				end
 
-				-- FzfLua pickers (add value over built-in with picker UI)
+				-- FzfLua pickers (override built-ins to avoid quickfix/native select UI)
+				map("n", "gra", "<cmd>FzfLua lsp_code_actions<CR>", "Code actions")
 				map("n", "gR", "<cmd>FzfLua lsp_references<CR>", "Show LSP references")
 				map("n", "gd", "<cmd>FzfLua lsp_definitions<CR>", "Show LSP definitions")
 				map("n", "gi", "<cmd>FzfLua lsp_implementations<CR>", "Show LSP implementations")
 				map("n", "gt", "<cmd>FzfLua lsp_typedefs<CR>", "Show LSP type definitions")
+				map("n", "<leader>ls", "<cmd>FzfLua lsp_document_symbols<CR>", "Document symbols")
+				map("n", "<leader>lS", "<cmd>FzfLua lsp_workspace_symbols<CR>", "Workspace symbols")
 				map("n", "<leader>D", "<cmd>FzfLua diagnostics_document<CR>", "Buffer diagnostics")
+				map("n", "<leader>dw", "<cmd>FzfLua diagnostics_workspace<CR>", "Workspace diagnostics")
 
 				-- Non-redundant mappings
 				map("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
 				map("n", "<leader>rs", ":LspRestart<CR>", "Restart LSP")
 
-				-- Built-in since nvim 0.10+: K (hover), grn (rename), gra (code action), <C-W>d (diagnostic float)
+				-- Built-in since nvim 0.10+: K (hover), grn (rename), <C-W>d (diagnostic float)
 			end,
 		})
 
