@@ -33,6 +33,13 @@ sudo-command-line() {
 zle -N sudo-command-line
 bindkey '\e\e' sudo-command-line
 
+# Homebrew (macOS) — must come before PATH so brew --prefix is usable
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+elif [[ -x /usr/local/bin/brew ]]; then
+  eval "$(/usr/local/bin/brew shellenv)"
+fi
+
 # --- PATH ---
 export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.fzf/bin:$PATH"
 
@@ -42,9 +49,8 @@ ZSH_PLUGINS="$HOME/.zsh/plugins"
 [[ -f "$ZSH_PLUGINS/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && source "$ZSH_PLUGINS/zsh-autosuggestions/zsh-autosuggestions.zsh"
 [[ -f "$ZSH_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && source "$ZSH_PLUGINS/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
-# fzf keybindings and completion
-[[ -f "$HOME/.fzf/shell/key-bindings.zsh" ]] && source "$HOME/.fzf/shell/key-bindings.zsh"
-[[ -f "$HOME/.fzf/shell/completion.zsh" ]] && source "$HOME/.fzf/shell/completion.zsh"
+# fzf keybindings and completion (fzf --zsh works with both git-clone and Homebrew installs)
+command -v fzf >/dev/null 2>&1 && source <(fzf --zsh)
 
 # fzf-git.sh keybindings (Ctrl-G + Ctrl-F/B/T/R/H/S/L/W/E)
 [[ -f "$HOME/.fzf-git.sh/fzf-git.sh" ]] && source "$HOME/.fzf-git.sh/fzf-git.sh"
