@@ -87,3 +87,6 @@ for _cmd in nvim starship fzf zoxide tmux; do
   command -v "$_cmd" >/dev/null 2>&1 || echo "[warn] $_cmd not found — run ~/.dotfiles/install.sh"
 done
 unset _cmd
+
+# Added by LM Studio CLI tool (lms)
+export PATH="$PATH:/home/hershel/.lmstudio/bin"
