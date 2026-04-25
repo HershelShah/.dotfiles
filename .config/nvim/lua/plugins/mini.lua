@@ -71,10 +71,8 @@ return {
 				miniclue.gen_clues.z(),
 
 				-- Leader group descriptions
-				{ mode = "n", keys = "<Leader>a", desc = "+avante" },
-				{ mode = "x", keys = "<Leader>a", desc = "+avante" },
-				{ mode = "n", keys = "<Leader>c", desc = "+copilot-chat" },
-				{ mode = "x", keys = "<Leader>c", desc = "+copilot-chat" },
+				{ mode = "n", keys = "<Leader>a", desc = "+agentic" },
+				{ mode = "x", keys = "<Leader>a", desc = "+agentic" },
 				{ mode = "n", keys = "<Leader>f", desc = "+find" },
 				{ mode = "n", keys = "<Leader>g", desc = "+git" },
 				{ mode = "n", keys = "<Leader>h", desc = "+hunk" },

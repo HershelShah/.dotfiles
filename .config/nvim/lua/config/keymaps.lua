@@ -3,8 +3,7 @@
 -- Plugin-specific keymaps live in their plugin files:
 --   lsp.lua:        gd, gR, gi, gt, gD, <leader>D, <leader>rs
 --   fzf-lua.lua:    <leader>ff, <leader>fg, <leader>fb, <leader>fh, <leader>gb, <leader>gc
---   copilot-chat:   <leader>c* (chat, explain, review, refactor, tests, etc.)
---   avante:         <leader>a* (AI panel)
+--   agentic:        <C-\>, <leader>aa toggle chat; <leader>an new session
 --   treesitter:     <C-space>/<bs> select, [f/]f [m/]m [c/]c [i/]i [l/]l motions,
 --                   a=/i= a/ia am/im ac/ic af/if al/il text objects,
 --                   <leader>na/nm swap next, <leader>pa/pm swap prev

@@ -3,12 +3,6 @@ return {
 	event = "InsertEnter",
 	dependencies = {
 		"rafamadriz/friendly-snippets",
-		{
-			"fang2hou/blink-copilot",
-			opts = {
-				max_completions = 3,
-			},
-		},
 	},
 	version = "*",
 	---@module "blink.cmp"
@@ -28,15 +22,7 @@ return {
 			nerd_font_variant = "mono",
 		},
 		sources = {
-			default = { "lsp", "path", "snippets", "buffer", "copilot" },
-			providers = {
-				copilot = {
-					name = "copilot",
-					module = "blink-copilot",
-					score_offset = 100,
-					async = true,
-				},
-			},
+			default = { "lsp", "path", "snippets", "buffer" },
 		},
 		completion = {
 			documentation = { auto_show = true },
