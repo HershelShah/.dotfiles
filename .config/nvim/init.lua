@@ -8,6 +8,7 @@ opt.number = true
 opt.relativenumber = true
 opt.clipboard = "unnamedplus"
 opt.signcolumn = "yes"
+opt.undofile = true
 
 -- Bootstrap plugin manager, set leader, load plugins
 require("config.lazy")

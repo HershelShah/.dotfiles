@@ -15,6 +15,7 @@ return {
 	opts = {
 		formatters_by_ft = {
 			lua = { "stylua" },
+			python = { "ruff_format", "ruff_organize_imports" },
 			c = { "clang-format" },
 			cpp = { "clang-format" },
 			cuda = { "clang-format" },

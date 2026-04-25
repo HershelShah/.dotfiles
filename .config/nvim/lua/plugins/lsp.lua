@@ -37,7 +37,7 @@ return {
 				map("n", "<leader>dw", "<cmd>FzfLua diagnostics_workspace<CR>", "Workspace diagnostics")
 
 				-- Non-redundant mappings
-				map("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
+				map("n", "gD", "<cmd>FzfLua lsp_declarations<CR>", "Go to declaration")
 				map("n", "<leader>rs", ":LspRestart<CR>", "Restart LSP")
 
 				-- Built-in since nvim 0.10+: K (hover), grn (rename), <C-W>d (diagnostic float)
@@ -68,6 +68,10 @@ return {
 			capabilities = capabilities,
 		})
 
+		vim.lsp.config("cmake", {
+			capabilities = capabilities,
+		})
+
 		vim.lsp.config("lua_ls", {
 			capabilities = capabilities,
 			settings = {
@@ -86,6 +90,6 @@ return {
 		})
 
 		-- Enable configured servers
-		vim.lsp.enable({ "clangd", "pyright", "lua_ls" })
+		vim.lsp.enable({ "clangd", "cmake", "pyright", "lua_ls" })
 	end,
 }

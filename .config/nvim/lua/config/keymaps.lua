@@ -22,8 +22,9 @@ map("n", "<leader>w", "<cmd>w<CR>", { desc = "Save" })
 -- Buffers (mini.bufremove provides Bdelete/Bwipeout)
 map("n", "<leader>x", "<cmd>lua MiniBufremove.delete()<CR>", { desc = "Delete buffer" })
 
--- File explorer (netrw)
-map("n", "<leader>e", "<cmd>Explore<CR>", { desc = "File explorer" })
+-- File explorer (mini.files)
+map("n", "<leader>e", "<cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>", { desc = "File explorer (current file)" })
+map("n", "<leader>E", "<cmd>lua MiniFiles.open()<CR>", { desc = "File explorer (cwd)" })
 
 -- Mini.map
 map("n", "<leader>mm", "<cmd>lua MiniMap.toggle()<CR>", { desc = "Toggle minimap" })

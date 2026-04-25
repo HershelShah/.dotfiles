@@ -13,6 +13,7 @@ return {
 	config = function()
 		require("mini.bufremove").setup() -- :Bdelete without closing window
 		require("mini.cursorword").setup() -- underline word under cursor
+		require("mini.files").setup() -- file explorer (miller columns)
 		require("mini.indentscope").setup() -- animated indent guide
 		require("mini.map").setup() -- minimap sidebar
 		require("mini.move").setup() -- <M-hjkl> move lines/selections
