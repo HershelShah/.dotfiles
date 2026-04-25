@@ -88,5 +88,5 @@ for _cmd in nvim starship fzf zoxide tmux; do
 done
 unset _cmd
 
-# Added by LM Studio CLI tool (lms)
-export PATH="$PATH:/home/hershel/.lmstudio/bin"
+# LM Studio CLI (lms) — only if installed
+[[ -d "$HOME/.lmstudio/bin" ]] && export PATH="$PATH:$HOME/.lmstudio/bin"
