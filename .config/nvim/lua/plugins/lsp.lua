@@ -56,7 +56,7 @@ return {
 			end,
 		})
 
-		-- Diagnostic signs (nvim 0.11+ API, replaces deprecated vim.fn.sign_define)
+		-- Diagnostic UI (nvim 0.11+ API)
 		vim.diagnostic.config({
 			signs = {
 				text = {
@@ -66,6 +66,14 @@ return {
 					[vim.diagnostic.severity.INFO] = " ",
 				},
 			},
+			severity_sort = true,
+			update_in_insert = false,
+			virtual_text = {
+				spacing = 4,
+				prefix = "●",
+				source = "if_many", -- show source only when multiple LSPs report
+			},
+			float = { border = "rounded", source = true },
 		})
 
 		-- Capabilities from blink.cmp (shared across all servers)

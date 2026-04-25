@@ -1,14 +1,5 @@
--- Options
-local opt = vim.opt
-opt.tabstop = 4
-opt.softtabstop = 4
-opt.shiftwidth = 4
-opt.expandtab = true
-opt.number = true
-opt.relativenumber = true
-opt.clipboard = "unnamedplus"
-opt.signcolumn = "yes"
-opt.undofile = true
+-- Options (must load before lazy.nvim so leader is set when plugins load)
+require("config.options")
 
 -- Bootstrap plugin manager, set leader, load plugins
 require("config.lazy")

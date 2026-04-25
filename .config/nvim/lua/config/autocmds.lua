@@ -10,6 +10,17 @@ autocmd("Filetype", {
 	command = "set colorcolumn=80",
 })
 
+-- 2-space indent for web/data filetypes (overrides global 4 from options.lua)
+autocmd("FileType", {
+	group = augroup("TwoSpaceIndent", { clear = true }),
+	pattern = { "lua", "javascript", "typescript", "html", "css", "json", "yaml", "toml", "markdown" },
+	callback = function()
+		vim.opt_local.tabstop = 2
+		vim.opt_local.softtabstop = 2
+		vim.opt_local.shiftwidth = 2
+	end,
+})
+
 -- Wrapping and spellcheck for prose
 autocmd("Filetype", {
 	group = augroup("Prose", { clear = true }),

@@ -14,7 +14,9 @@ return {
 		require("mini.bufremove").setup() -- :Bdelete without closing window
 		require("mini.cursorword").setup() -- underline word under cursor
 		require("mini.files").setup() -- file explorer (miller columns)
-		require("mini.indentscope").setup() -- animated indent guide
+		require("mini.indentscope").setup({ -- indent guide (animation disabled — slow on big files)
+			draw = { animation = require("mini.indentscope").gen_animation.none() },
+		})
 		require("mini.map").setup() -- minimap sidebar
 		require("mini.move").setup() -- <M-hjkl> move lines/selections
 		require("mini.pairs").setup() -- auto-close brackets/quotes
