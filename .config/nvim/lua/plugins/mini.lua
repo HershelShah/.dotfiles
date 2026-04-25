@@ -39,53 +39,61 @@ return {
 			},
 		})
 
-		-- mini.clue — keybinding hints (like which-key)
-		local miniclue = require("mini.clue")
-		miniclue.setup({
-			triggers = {
-				{ mode = "n", keys = "<Leader>" },
-				{ mode = "x", keys = "<Leader>" },
-				{ mode = "i", keys = "<C-x>" },
-				{ mode = "n", keys = "g" },
-				{ mode = "x", keys = "g" },
-				{ mode = "n", keys = "'" },
-				{ mode = "n", keys = "`" },
-				{ mode = "x", keys = "'" },
-				{ mode = "x", keys = "`" },
-				{ mode = "n", keys = '"' },
-				{ mode = "x", keys = '"' },
-				{ mode = "i", keys = "<C-r>" },
-				{ mode = "c", keys = "<C-r>" },
-				{ mode = "n", keys = "<C-w>" },
-				{ mode = "n", keys = "z" },
-				{ mode = "x", keys = "z" },
-				{ mode = "n", keys = "[" },
-				{ mode = "n", keys = "]" },
-				{ mode = "x", keys = "[" },
-				{ mode = "x", keys = "]" },
-			},
-			clues = {
-				miniclue.gen_clues.builtin_completion(),
-				miniclue.gen_clues.g(),
-				miniclue.gen_clues.marks(),
-				miniclue.gen_clues.registers(),
-				miniclue.gen_clues.windows(),
-				miniclue.gen_clues.z(),
+		-- mini.clue — keybinding hints (which-key style)
+		-- Deferred to User VeryLazy so other plugins (LSP, gitsigns, trouble,
+		-- agentic) have registered their keymaps before clue scans them.
+		vim.api.nvim_create_autocmd("User", {
+			pattern = "VeryLazy",
+			once = true,
+			callback = function()
+				local miniclue = require("mini.clue")
+				miniclue.setup({
+					triggers = {
+						{ mode = "n", keys = "<Leader>" },
+						{ mode = "x", keys = "<Leader>" },
+						{ mode = "i", keys = "<C-x>" },
+						{ mode = "n", keys = "g" },
+						{ mode = "x", keys = "g" },
+						{ mode = "n", keys = "'" },
+						{ mode = "n", keys = "`" },
+						{ mode = "x", keys = "'" },
+						{ mode = "x", keys = "`" },
+						{ mode = "n", keys = '"' },
+						{ mode = "x", keys = '"' },
+						{ mode = "i", keys = "<C-r>" },
+						{ mode = "c", keys = "<C-r>" },
+						{ mode = "n", keys = "<C-w>" },
+						{ mode = "n", keys = "z" },
+						{ mode = "x", keys = "z" },
+						{ mode = "n", keys = "[" },
+						{ mode = "n", keys = "]" },
+						{ mode = "x", keys = "[" },
+						{ mode = "x", keys = "]" },
+					},
+					clues = {
+						miniclue.gen_clues.builtin_completion(),
+						miniclue.gen_clues.g(),
+						miniclue.gen_clues.marks(),
+						miniclue.gen_clues.registers(),
+						miniclue.gen_clues.windows(),
+						miniclue.gen_clues.z(),
 
-				-- Leader group descriptions
-				{ mode = "n", keys = "<Leader>a", desc = "+agentic" },
-				{ mode = "x", keys = "<Leader>a", desc = "+agentic" },
-				{ mode = "n", keys = "<Leader>f", desc = "+find" },
-				{ mode = "n", keys = "<Leader>g", desc = "+git" },
-				{ mode = "n", keys = "<Leader>h", desc = "+hunk" },
-				{ mode = "v", keys = "<Leader>h", desc = "+hunk" },
-				{ mode = "n", keys = "<Leader>l", desc = "+lsp" },
-				{ mode = "n", keys = "<Leader>m", desc = "+mini" },
-				{ mode = "n", keys = "<Leader>n", desc = "+swap next" },
-				{ mode = "n", keys = "<Leader>p", desc = "+swap prev" },
-				{ mode = "n", keys = "<Leader>r", desc = "+rename/restart" },
-				{ mode = "n", keys = "<Leader>t", desc = "+toggle" },
-			},
+						-- Leader group descriptions
+						{ mode = "n", keys = "<Leader>a", desc = "+agentic" },
+						{ mode = "x", keys = "<Leader>a", desc = "+agentic" },
+						{ mode = "n", keys = "<Leader>f", desc = "+find" },
+						{ mode = "n", keys = "<Leader>g", desc = "+git" },
+						{ mode = "n", keys = "<Leader>h", desc = "+hunk" },
+						{ mode = "v", keys = "<Leader>h", desc = "+hunk" },
+						{ mode = "n", keys = "<Leader>l", desc = "+lsp" },
+						{ mode = "n", keys = "<Leader>m", desc = "+mini" },
+						{ mode = "n", keys = "<Leader>n", desc = "+swap next" },
+						{ mode = "n", keys = "<Leader>p", desc = "+swap prev" },
+						{ mode = "n", keys = "<Leader>r", desc = "+rename/restart" },
+						{ mode = "n", keys = "<Leader>t", desc = "+toggle" },
+					},
+				})
+			end,
 		})
 	end,
 }
