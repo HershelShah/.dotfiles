@@ -173,10 +173,10 @@ else
     gh_tar lazygit "https://github.com/jesseduffield/lazygit/releases/download/${v}/lazygit_${vn}_linux_${lg_arch}.tar.gz"
   fi
   if need sesh; then
-    v=$(gh_latest joshmedeski/sesh); vn="${v#v}"
-    sesh_arch="amd64"
+    v=$(gh_latest joshmedeski/sesh)
+    sesh_arch="x86_64"
     [[ "$ARCH" == "aarch64" ]] && sesh_arch="arm64"
-    gh_tar sesh "https://github.com/joshmedeski/sesh/releases/download/${v}/sesh_${vn}_linux_${sesh_arch}.tar.gz"
+    gh_tar sesh "https://github.com/joshmedeski/sesh/releases/download/${v}/sesh_Linux_${sesh_arch}.tar.gz"
   fi
   if need direnv; then
     v=$(gh_latest direnv/direnv)
