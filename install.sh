@@ -71,6 +71,7 @@ if [[ "$OS" == "Darwin" ]]; then
   need eza       && pkgs+=(eza)
   need lazygit   && pkgs+=(lazygit)
   need tmux      && pkgs+=(tmux)
+  need sesh      && pkgs+=(sesh)
 
   if [[ ${#pkgs[@]} -gt 0 ]]; then
     echo "[install] ${pkgs[*]}..."
@@ -168,6 +169,12 @@ else
     lg_arch="x86_64"
     [[ "$ARCH" == "aarch64" ]] && lg_arch="arm64"
     gh_tar lazygit "https://github.com/jesseduffield/lazygit/releases/download/${v}/lazygit_${vn}_linux_${lg_arch}.tar.gz"
+  fi
+  if need sesh; then
+    v=$(gh_latest joshmedeski/sesh); vn="${v#v}"
+    sesh_arch="amd64"
+    [[ "$ARCH" == "aarch64" ]] && sesh_arch="arm64"
+    gh_tar sesh "https://github.com/joshmedeski/sesh/releases/download/${v}/sesh_${vn}_linux_${sesh_arch}.tar.gz"
   fi
 fi
 
