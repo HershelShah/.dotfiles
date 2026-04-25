@@ -5,6 +5,7 @@ SAVEHIST=100000
 setopt EXTENDED_HISTORY HIST_EXPIRE_DUPS_FIRST HIST_IGNORE_DUPS
 setopt HIST_IGNORE_SPACE HIST_VERIFY SHARE_HISTORY
 setopt AUTO_CD AUTO_PUSHD PUSHD_IGNORE_DUPS
+setopt GLOB_DOTS  # tab-complete dotfiles without leading .
 bindkey -e
 
 # Completions (regenerate cache once daily)
@@ -62,6 +63,12 @@ alias vim='nvim'
 # Modern CLI aliases
 command -v eza >/dev/null 2>&1 && alias ll='eza -la --icons --git' && alias tree='eza --tree --icons'
 alias lg='lazygit'
+alias g='git'
+
+# Quick parent-dir jumps
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
 
 # Use fd and bat with fzf when available
 if command -v fd >/dev/null 2>&1; then
