@@ -40,8 +40,14 @@ return {
 				map("n", "gD", "<cmd>FzfLua lsp_declarations<CR>", "Go to declaration")
 				map("n", "<leader>rs", ":LspRestart<CR>", "Restart LSP")
 
-				-- Inlay hints: enable on attach if supported, toggle with <leader>th
 				local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+				-- clangd-specific: switch between source/header
+				if client and client.name == "clangd" then
+					map("n", "<leader>lh", "<cmd>ClangdSwitchSourceHeader<cr>", "Switch source/header")
+				end
+
+				-- Inlay hints: enable on attach if supported, toggle with <leader>th
 				if client and client:supports_method("textDocument/inlayHint") then
 					vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
 					map("n", "<leader>th", function()
