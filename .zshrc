@@ -64,6 +64,7 @@ alias vim='nvim'
 command -v eza >/dev/null 2>&1 && alias ll='eza -la --icons --git' && alias tree='eza --tree --icons'
 alias lg='lazygit'
 alias g='git'
+alias cheat='bat --style=plain --paging=always --color=always ~/.dotfiles/CHEATSHEET.md'
 
 # Quick parent-dir jumps
 alias ..='cd ..'
