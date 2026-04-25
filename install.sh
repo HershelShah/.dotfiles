@@ -3,12 +3,19 @@
 # Usage:
 #   ./install.sh            # symlink dotfiles + install tools
 #   ./install.sh --no-link  # install tools only (for Docker)
+#   ./install.sh --update   # update git-cloned plugins and tools
 set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 BIN_DIR="$HOME/.local/bin"
 NO_LINK=false
-[[ "${1:-}" == "--no-link" ]] && NO_LINK=true
+UPDATE=false
+for arg in "$@"; do
+  case "$arg" in
+    --no-link) NO_LINK=true ;;
+    --update)  UPDATE=true ;;
+  esac
+done
 
 need() { ! command -v "$1" >/dev/null 2>&1; }
 
@@ -63,6 +70,7 @@ if [[ "$OS" == "Darwin" ]]; then
   need zoxide    && pkgs+=(zoxide)
   need eza       && pkgs+=(eza)
   need lazygit   && pkgs+=(lazygit)
+  need tmux      && pkgs+=(tmux)
 
   if [[ ${#pkgs[@]} -gt 0 ]]; then
     echo "[install] ${pkgs[*]}..."
@@ -74,6 +82,14 @@ else
   # Linux: pre-built binaries downloaded to ~/.local/bin
   mkdir -p "$BIN_DIR"
   PATH="$BIN_DIR:$HOME/.fzf/bin:$PATH"
+
+  # Detect architecture
+  UARCH="$(uname -m)"
+  case "$UARCH" in
+    x86_64)          ARCH="x86_64" ;;
+    aarch64|arm64)   ARCH="aarch64" ;;
+    *)               echo "[error] Unsupported architecture: $UARCH"; exit 1 ;;
+  esac
 
   for cmd in git curl; do
     if need "$cmd"; then
@@ -105,9 +121,11 @@ else
 
   if need nvim; then
     echo "[install] neovim..."
-    curl -sSfL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz" \
+    nvim_arch="x86_64"
+    [[ "$ARCH" == "aarch64" ]] && nvim_arch="arm64"
+    curl -sSfL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${nvim_arch}.tar.gz" \
       | tar xz -C "$HOME/.local"
-    ln -sf "$HOME/.local/nvim-linux-x86_64/bin/nvim" "$BIN_DIR/nvim"
+    ln -sf "$HOME/.local/nvim-linux-${nvim_arch}/bin/nvim" "$BIN_DIR/nvim"
   fi
 
   if need fzf; then
@@ -123,31 +141,33 @@ else
 
   if need rg; then
     v=$(gh_latest BurntSushi/ripgrep)
-    gh_tar rg "https://github.com/BurntSushi/ripgrep/releases/download/${v}/ripgrep-${v}-x86_64-unknown-linux-musl.tar.gz" 1
+    gh_tar rg "https://github.com/BurntSushi/ripgrep/releases/download/${v}/ripgrep-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1
   fi
   if need fd; then
     v=$(gh_latest sharkdp/fd)
-    gh_tar fd "https://github.com/sharkdp/fd/releases/download/${v}/fd-${v}-x86_64-unknown-linux-musl.tar.gz" 1
+    gh_tar fd "https://github.com/sharkdp/fd/releases/download/${v}/fd-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1
   fi
   if need bat; then
     v=$(gh_latest sharkdp/bat)
-    gh_tar bat "https://github.com/sharkdp/bat/releases/download/${v}/bat-${v}-x86_64-unknown-linux-musl.tar.gz" 1
+    gh_tar bat "https://github.com/sharkdp/bat/releases/download/${v}/bat-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1
   fi
   if need delta; then
     v=$(gh_latest dandavison/delta)
-    gh_tar delta "https://github.com/dandavison/delta/releases/download/${v}/delta-${v}-x86_64-unknown-linux-musl.tar.gz" 1
+    gh_tar delta "https://github.com/dandavison/delta/releases/download/${v}/delta-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1
   fi
   if need zoxide; then
     v=$(gh_latest ajeetdsouza/zoxide); vn="${v#v}"
-    gh_tar zoxide "https://github.com/ajeetdsouza/zoxide/releases/download/${v}/zoxide-${vn}-x86_64-unknown-linux-musl.tar.gz"
+    gh_tar zoxide "https://github.com/ajeetdsouza/zoxide/releases/download/${v}/zoxide-${vn}-${ARCH}-unknown-linux-musl.tar.gz"
   fi
   if need eza; then
     v=$(gh_latest eza-community/eza)
-    gh_tar eza "https://github.com/eza-community/eza/releases/download/${v}/eza_x86_64-unknown-linux-musl.tar.gz"
+    gh_tar eza "https://github.com/eza-community/eza/releases/download/${v}/eza_${ARCH}-unknown-linux-musl.tar.gz"
   fi
   if need lazygit; then
     v=$(gh_latest jesseduffield/lazygit); vn="${v#v}"
-    gh_tar lazygit "https://github.com/jesseduffield/lazygit/releases/download/${v}/lazygit_${vn}_linux_x86_64.tar.gz"
+    lg_arch="x86_64"
+    [[ "$ARCH" == "aarch64" ]] && lg_arch="arm64"
+    gh_tar lazygit "https://github.com/jesseduffield/lazygit/releases/download/${v}/lazygit_${vn}_linux_${lg_arch}.tar.gz"
   fi
 fi
 
@@ -187,6 +207,31 @@ fi
 if command -v fnm >/dev/null 2>&1 && [[ -z "$(fnm ls 2>/dev/null | grep -v system || true)" ]]; then
   echo "[install] node (LTS via fnm)..."
   fnm install --lts
+fi
+
+# --- Update git-cloned plugins ---
+if [[ "$UPDATE" == true ]]; then
+  echo ""
+  echo "Updating git-cloned plugins..."
+  pull_update() {
+    local dir="$1" name="$2"
+    if [[ -d "$dir" ]]; then
+      echo "[update] $name..."
+      git -C "$dir" fetch --depth=1 origin
+      git -C "$dir" reset --hard origin/HEAD
+    fi
+  }
+  pull_update "$HOME/.fzf"           "fzf"
+  pull_update "$HOME/.fzf-git.sh"    "fzf-git.sh"
+  pull_update "$ZSH_PLUGINS/zsh-autosuggestions"     "zsh-autosuggestions"
+  pull_update "$ZSH_PLUGINS/zsh-syntax-highlighting" "zsh-syntax-highlighting"
+  pull_update "$ZSH_PLUGINS/fzf-tab"                 "fzf-tab"
+
+  # Re-sync neovim plugins
+  if command -v nvim >/dev/null 2>&1; then
+    echo "[update] neovim plugins..."
+    nvim --headless "+Lazy! sync" +qa 2>/dev/null || true
+  fi
 fi
 
 echo ""
