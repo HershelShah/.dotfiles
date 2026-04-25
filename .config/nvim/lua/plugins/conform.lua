@@ -1,6 +1,6 @@
 return {
 	"stevearc/conform.nvim",
-	event = { "BufReadPre", "BufNewFile" },
+	event = "VeryLazy",
 	dependencies = {
 		"williamboman/mason.nvim",
 		{ "zapling/mason-conform.nvim", opts = {} },
