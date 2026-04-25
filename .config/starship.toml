@@ -9,6 +9,7 @@ $nodejs\
 $rust\
 $lua\
 $c\
+$container\
 $cmd_duration\
 $line_break\
 $character"""
@@ -39,6 +40,10 @@ symbol = " "
 
 [c]
 symbol = " "
+
+[container]
+symbol = "⬡ "
+style = "bold dimmed red"
 
 [cmd_duration]
 min_time = 2_000

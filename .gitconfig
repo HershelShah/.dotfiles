@@ -18,3 +18,11 @@
 
 [diff]
 	colorMoved = default
+
+[alias]
+	s = status -sb
+	co = checkout
+	cb = checkout -b
+	lg = log --oneline --graph --decorate -20
+	unstage = reset HEAD --
+	last = log -1 HEAD --stat
