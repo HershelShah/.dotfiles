@@ -24,7 +24,7 @@ autocmd("Filetype", {
 autocmd("TextYankPost", {
 	group = augroup("YankHighlight", { clear = true }),
 	callback = function()
-		vim.highlight.on_yank({ timeout = 200 })
+		vim.hl.on_yank({ timeout = 200 })
 	end,
 })
 
