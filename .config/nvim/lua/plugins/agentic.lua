@@ -31,5 +31,10 @@ return {
 			function() require("agentic").new_session() end,
 			desc = "New Agentic session",
 		},
+		{
+			"<leader>ar",
+			function() require("agentic").restore_session() end,
+			desc = "Restore Agentic session (incl. terminal claude sessions)",
+		},
 	},
 }
