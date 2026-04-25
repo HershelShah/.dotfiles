@@ -13,11 +13,36 @@
 	side-by-side = true
 	line-numbers = true
 
+[init]
+	defaultBranch = main
+
+[push]
+	autoSetupRemote = true
+
+[pull]
+	rebase = true
+
+[fetch]
+	prune = true
+
+[rerere]
+	enabled = true
+
+[branch]
+	sort = -committerdate
+
+[rebase]
+	autosquash = true
+
+[column]
+	ui = auto
+
 [merge]
 	conflictstyle = zdiff3
 
 [diff]
 	colorMoved = default
+	algorithm = histogram
 
 [alias]
 	s = status -sb
