@@ -40,6 +40,18 @@ return {
 				map("n", "gD", "<cmd>FzfLua lsp_declarations<CR>", "Go to declaration")
 				map("n", "<leader>rs", ":LspRestart<CR>", "Restart LSP")
 
+				-- Inlay hints: enable on attach if supported, toggle with <leader>th
+				local client = vim.lsp.get_client_by_id(event.data.client_id)
+				if client and client:supports_method("textDocument/inlayHint") then
+					vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+					map("n", "<leader>th", function()
+						vim.lsp.inlay_hint.enable(
+							not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }),
+							{ bufnr = event.buf }
+						)
+					end, "Toggle inlay hints")
+				end
+
 				-- Built-in since nvim 0.10+: K (hover), grn (rename), <C-W>d (diagnostic float)
 			end,
 		})
@@ -66,6 +78,16 @@ return {
 
 		vim.lsp.config("pyright", {
 			capabilities = capabilities,
+			settings = {
+				python = {
+					analysis = {
+						inlayHints = {
+							variableTypes = true,
+							functionReturnTypes = true,
+						},
+					},
+				},
+			},
 		})
 
 		vim.lsp.config("cmake", {
@@ -79,6 +101,7 @@ return {
 					diagnostics = {
 						globals = { "vim" },
 					},
+					hint = { enable = true },
 					workspace = {
 						library = {
 							[vim.fn.expand("$VIMRUNTIME/lua")] = true,

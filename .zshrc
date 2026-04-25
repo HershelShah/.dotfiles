@@ -86,11 +86,14 @@ fi
 # Zoxide (smarter cd)
 command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
 
+# direnv (auto-load .envrc on cd)
+command -v direnv >/dev/null 2>&1 && eval "$(direnv hook zsh)"
+
 # Starship prompt (must be last)
 command -v starship >/dev/null 2>&1 && eval "$(starship init zsh)"
 
 # Warn if key tools are missing
-for _cmd in nvim starship fzf zoxide tmux; do
+for _cmd in nvim starship fzf zoxide tmux gh direnv sesh; do
   command -v "$_cmd" >/dev/null 2>&1 || echo "[warn] $_cmd not found — run ~/.dotfiles/install.sh"
 done
 unset _cmd

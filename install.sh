@@ -72,6 +72,8 @@ if [[ "$OS" == "Darwin" ]]; then
   need lazygit   && pkgs+=(lazygit)
   need tmux      && pkgs+=(tmux)
   need sesh      && pkgs+=(sesh)
+  need direnv    && pkgs+=(direnv)
+  need gh        && pkgs+=(gh)
 
   if [[ ${#pkgs[@]} -gt 0 ]]; then
     echo "[install] ${pkgs[*]}..."
@@ -175,6 +177,20 @@ else
     sesh_arch="amd64"
     [[ "$ARCH" == "aarch64" ]] && sesh_arch="arm64"
     gh_tar sesh "https://github.com/joshmedeski/sesh/releases/download/${v}/sesh_${vn}_linux_${sesh_arch}.tar.gz"
+  fi
+  if need direnv; then
+    v=$(gh_latest direnv/direnv)
+    direnv_arch="amd64"
+    [[ "$ARCH" == "aarch64" ]] && direnv_arch="arm64"
+    echo "[install] direnv..."
+    curl -sSfL "https://github.com/direnv/direnv/releases/download/${v}/direnv.linux-${direnv_arch}" -o "$BIN_DIR/direnv"
+    chmod +x "$BIN_DIR/direnv"
+  fi
+  if need gh; then
+    v=$(gh_latest cli/cli); vn="${v#v}"
+    gh_arch="amd64"
+    [[ "$ARCH" == "aarch64" ]] && gh_arch="arm64"
+    gh_tar gh "https://github.com/cli/cli/releases/download/${v}/gh_${vn}_linux_${gh_arch}.tar.gz" 2
   fi
 fi
 
