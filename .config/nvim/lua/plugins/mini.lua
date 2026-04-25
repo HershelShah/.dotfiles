@@ -41,7 +41,7 @@ return {
 
 		-- mini.clue — keybinding hints (which-key style)
 		-- Deferred to User VeryLazy so other plugins (LSP, gitsigns, trouble,
-		-- agentic) have registered their keymaps before clue scans them.
+		-- claudecode) have registered their keymaps before clue scans them.
 		vim.api.nvim_create_autocmd("User", {
 			pattern = "VeryLazy",
 			once = true,
@@ -79,8 +79,8 @@ return {
 						miniclue.gen_clues.z(),
 
 						-- Leader group descriptions
-						{ mode = "n", keys = "<Leader>a", desc = "+agentic" },
-						{ mode = "x", keys = "<Leader>a", desc = "+agentic" },
+						{ mode = "n", keys = "<Leader>a", desc = "+claude" },
+						{ mode = "x", keys = "<Leader>a", desc = "+claude" },
 						{ mode = "n", keys = "<Leader>f", desc = "+find" },
 						{ mode = "n", keys = "<Leader>g", desc = "+git" },
 						{ mode = "n", keys = "<Leader>h", desc = "+hunk" },

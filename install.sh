@@ -232,19 +232,6 @@ if command -v fnm >/dev/null 2>&1 && [[ -z "$(fnm ls 2>/dev/null | grep -v syste
   fnm install --lts
 fi
 
-# ACP server for agentic.nvim (Claude Code chat in nvim)
-# Activate fnm so npm is on PATH for fresh installs
-if command -v fnm >/dev/null 2>&1; then
-  eval "$(fnm env)" 2>/dev/null || true
-fi
-if command -v npm >/dev/null 2>&1; then
-  if ! npm list -g --depth=0 2>/dev/null | grep -q '@agentclientprotocol/claude-agent-acp'; then
-    echo "[install] @agentclientprotocol/claude-agent-acp..."
-    npm install -g @agentclientprotocol/claude-agent-acp 2>/dev/null || \
-      echo "[warn] failed to install claude-agent-acp; install manually with: npm i -g @agentclientprotocol/claude-agent-acp"
-  fi
-fi
-
 # --- Update git-cloned plugins ---
 if [[ "$UPDATE" == true ]]; then
   echo ""

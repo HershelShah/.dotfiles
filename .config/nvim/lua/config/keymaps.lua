@@ -3,7 +3,8 @@
 -- Plugin-specific keymaps live in their plugin files:
 --   lsp.lua:        gd, gR, gi, gt, gD, <leader>D, <leader>rs
 --   fzf-lua.lua:    <leader>ff, <leader>fg, <leader>fb, <leader>fh, <leader>gb, <leader>gc
---   agentic:        <C-\>, <leader>aa toggle chat; <leader>an new session
+--   claudecode:     <leader>ac toggle, af focus, ar resume, aC continue,
+--                   am model, ab add buf, as send (v), aa accept diff, ad deny
 --   treesitter:     <C-space>/<bs> select, [f/]f [m/]m [c/]c [i/]i [l/]l motions,
 --                   a=/i= a/ia am/im ac/ic af/if al/il text objects,
 --                   <leader>na/nm swap next, <leader>pa/pm swap prev
