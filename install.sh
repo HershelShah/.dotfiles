@@ -19,6 +19,15 @@ done
 
 need() { ! command -v "$1" >/dev/null 2>&1; }
 
+# Need to (re)install neovim? True if missing OR older than 0.12 — the
+# main-branch nvim-treesitter config requires nightly, so an existing stable
+# nvim must still be upgraded.
+need_nvim() {
+  command -v nvim >/dev/null 2>&1 || return 0
+  ! nvim --headless --noplugin -u NONE \
+      -c "lua os.exit(vim.fn.has('nvim-0.12') == 1 and 0 or 1)" -c "qa" 2>/dev/null
+}
+
 OS="$(uname -s)"  # Linux | Darwin
 
 # --- Symlinks ---
@@ -151,7 +160,7 @@ else
     curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b "$BIN_DIR"
   fi
 
-  if need nvim; then
+  if need_nvim; then
     echo "[install] neovim (nightly)..."
     # nightly (0.12) is required by the main-branch nvim-treesitter config
     nvim_arch="x86_64"
