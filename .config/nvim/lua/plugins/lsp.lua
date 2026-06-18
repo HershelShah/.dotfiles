@@ -100,6 +100,22 @@ return {
 		-- Capabilities from blink.cmp (shared across all servers)
 		local capabilities = require("blink.cmp").get_lsp_capabilities()
 
+		-- Resolve the Python interpreter for a project: prefer an already-active
+		-- environment, otherwise a uv/local .venv at the project root. Returns nil
+		-- to let pyright fall back to the system python.
+		local function venv_python(root)
+			if vim.env.VIRTUAL_ENV then
+				return vim.fs.joinpath(vim.env.VIRTUAL_ENV, "bin", "python")
+			end
+			if root then
+				local py = vim.fs.joinpath(root, ".venv", "bin", "python")
+				if vim.uv.fs_stat(py) then
+					return py
+				end
+			end
+			return nil
+		end
+
 		-- Server configs using vim.lsp.config (nvim 0.11+)
 		vim.lsp.config("clangd", {
 			capabilities = capabilities,
@@ -107,6 +123,15 @@ return {
 
 		vim.lsp.config("pyright", {
 			capabilities = capabilities,
+			-- Point pyright at the project's uv/.venv interpreter (if any) so it
+			-- resolves installed packages instead of the global site-packages.
+			before_init = function(_, config)
+				local py = venv_python(config.root_dir)
+				if py then
+					config.settings.python = config.settings.python or {}
+					config.settings.python.pythonPath = py
+				end
+			end,
 			settings = {
 				python = {
 					analysis = {
