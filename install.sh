@@ -174,6 +174,9 @@ else
     # nightly (0.12) is required by the main-branch nvim-treesitter config
     nvim_arch="x86_64"
     [[ "$ARCH" == "aarch64" ]] && nvim_arch="arm64"
+    # Wipe the old tree first; tar-over-extract leaves orphaned runtime files
+    # (upstream-deleted nightlies) that trip ":checkhealth" $VIMRUNTIME checks.
+    rm -rf "$HOME/.local/nvim-linux-${nvim_arch}"
     curl -sSfL "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-${nvim_arch}.tar.gz" \
       | tar xz -C "$HOME/.local"
     ln -sf "$HOME/.local/nvim-linux-${nvim_arch}/bin/nvim" "$BIN_DIR/nvim"
