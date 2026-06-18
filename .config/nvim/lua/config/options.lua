@@ -32,6 +32,10 @@ opt.virtualedit = "block" -- visual-block can extend past EOL
 opt.scrolloff = 8
 opt.sidescrolloff = 8
 opt.smoothscroll = true
-opt.updatetime = 250 -- faster CursorHold (LSP hover, gitsigns)
-opt.timeoutlen = 300 -- snappier mini.clue / multi-key sequences
+opt.updatetime = 250 -- faster CursorHold (LSP hover, reference highlight, gitsigns)
+opt.timeoutlen = 300 -- snappier multi-key sequences
 opt.laststatus = 3 -- single global statusline across splits
+
+-- Visualize trailing whitespace + non-breaking spaces (replaces mini.trailspace)
+opt.list = true
+opt.listchars = { trail = "·", nbsp = "·", tab = "» " }

@@ -2,15 +2,23 @@
 -- Leader is <Space> (set in config/lazy.lua)
 -- Plugin-specific keymaps live in their plugin files:
 --   lsp.lua:        gd, gR, gi, gt, gD, <leader>D, <leader>rs
---   fzf-lua.lua:    <leader>ff, <leader>fg, <leader>fb, <leader>fh, <leader>gb, <leader>gc
+--   fzf-lua.lua:    <leader>ff, <leader>fg, <leader>fb, <leader>fh, <leader>fk (keymaps),
+--                   <leader>ft (todos), <leader>gb, <leader>gc
 --   claudecode:     <leader>ac toggle, af focus, ar resume, aC continue,
 --                   am model, ab add buf, as send (v), aa accept diff, ad deny
---   treesitter:     <C-space>/<bs> select, [f/]f [m/]m [c/]c [i/]i [l/]l motions,
+--   treesitter:     [f/]f [m/]m [c/]c [i/]i [l/]l motions,
 --                   a=/i= a/ia am/im ac/ic af/if al/il text objects,
 --                   <leader>na/nm swap next, <leader>pa/pm swap prev
---   mini.surround:  sa (add), sd (delete), sr (replace)
---   mini.move:      <M-hjkl> move lines/selections
---   mini.splitjoin:  gS toggle single/multi-line
+--   flash:          s jump, <C-space> treesitter select, r remote (operator)
+--   multicursor:    <C-Up>/<C-Down> add cursor, <leader>c* (next/skip/all)
+--   aerial:         <leader>o outline toggle
+--   grug-far:       <leader>sr replace, <leader>sw replace word
+--   harpoon:        <leader>ja add, <leader>jj menu, <leader>1-4 jump
+--   quicker:        <leader>tq toggle editable quickfix
+--   oil:            <leader>e / <leader>E / - file explorer
+--   nvim-surround:  ys{motion}{char} add, ds delete, cs change, visual S
+--   todo-comments:  <leader>ft find TODOs
+--   stock:          <M-j>/<M-k> move line/selection (this file)
 
 local map = vim.keymap.set
 
@@ -19,18 +27,27 @@ map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "<leader>q", "<cmd>q<CR>", { desc = "Quit" })
 map("n", "<leader>w", "<cmd>w<CR>", { desc = "Save" })
 
--- Buffers (mini.bufremove provides Bdelete/Bwipeout)
-map("n", "<leader>x", "<cmd>lua MiniBufremove.delete()<CR>", { desc = "Delete buffer" })
+-- Delete buffer without closing the window (replaces mini.bufremove)
+map("n", "<leader>x", function()
+	local cur = vim.api.nvim_get_current_buf()
+	vim.cmd("bprevious")
+	pcall(vim.cmd, "confirm bdelete " .. cur)
+end, { desc = "Delete buffer" })
 
--- File explorer (mini.files)
-map("n", "<leader>e", "<cmd>lua MiniFiles.open(vim.api.nvim_buf_get_name(0))<CR>", { desc = "File explorer (current file)" })
-map("n", "<leader>E", "<cmd>lua MiniFiles.open()<CR>", { desc = "File explorer (cwd)" })
+-- File explorer (<leader>e / <leader>E) is provided by oil.nvim
 
--- Mini.map
-map("n", "<leader>mm", "<cmd>lua MiniMap.toggle()<CR>", { desc = "Toggle minimap" })
+-- Trim trailing whitespace (replaces mini.trailspace)
+map("n", "<leader>tw", function()
+	local view = vim.fn.winsaveview()
+	vim.cmd([[keeppatterns %s/\s\+$//e]])
+	vim.fn.winrestview(view)
+end, { desc = "Trim trailing whitespace" })
 
--- Mini.trailspace
-map("n", "<leader>tw", "<cmd>lua MiniTrailspace.trim()<CR>", { desc = "Trim trailing whitespace" })
+-- Move lines/selections up and down (replaces mini.move)
+map("n", "<M-j>", "<cmd>m .+1<CR>==", { desc = "Move line down" })
+map("n", "<M-k>", "<cmd>m .-2<CR>==", { desc = "Move line up" })
+map("x", "<M-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+map("x", "<M-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
 -- Better indenting (stay in visual mode)
 map("v", "<", "<gv", { desc = "Indent left" })

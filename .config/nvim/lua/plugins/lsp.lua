@@ -58,6 +58,21 @@ return {
 					end, "Toggle inlay hints")
 				end
 
+				-- Highlight other references to the symbol under cursor (replaces mini.cursorword)
+				if client and client:supports_method("textDocument/documentHighlight") then
+					local hl = vim.api.nvim_create_augroup("UserDocHighlight" .. event.buf, { clear = true })
+					vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+						group = hl,
+						buffer = event.buf,
+						callback = vim.lsp.buf.document_highlight,
+					})
+					vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+						group = hl,
+						buffer = event.buf,
+						callback = vim.lsp.buf.clear_references,
+					})
+				end
+
 				-- Built-in since nvim 0.10+: K (hover), grn (rename), <C-W>d (diagnostic float)
 			end,
 		})
