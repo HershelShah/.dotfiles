@@ -51,3 +51,35 @@
 	lg = log --oneline --graph --decorate -20
 	unstage = reset HEAD --
 	last = log -1 HEAD --stat
+
+	# history
+	lol = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	who = shortlog -sne --no-merges HEAD
+	# commit / undo
+	amend = commit --amend
+	amendne = commit --amend --no-edit
+	undo = reset --soft HEAD~1
+	# staging
+	aa = add --all
+	ap = add --patch
+	# stash
+	save = stash push --include-untracked
+	pop = stash pop
+	# diff
+	ds = diff --staged
+	dw = diff --word-diff
+	dstat = diff --stat
+	# push
+	pushf = push --force-with-lease --force-if-includes
+	pushup = !git push --set-upstream origin $(git symbolic-ref --short HEAD)
+	# branches
+	sw = switch
+	prune-remotes = remote prune origin
+	# utility
+	root = rev-parse --show-toplevel
+	aliases = config --get-regexp ^alias\\.
+
+	# destructive — use deliberately
+	discard = checkout --
+	cleanup = !git branch --merged | grep -vE '^[*+]|^[[:space:]]*(main|master|develop)$' | xargs -r git branch -d
+	nuke = !git reset --hard && git clean -xfd
