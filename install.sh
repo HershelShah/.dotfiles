@@ -28,6 +28,10 @@ need_nvim() {
       -c "lua os.exit(vim.fn.has('nvim-0.12') == 1 and 0 or 1)" -c "qa" 2>/dev/null
 }
 
+# Under --update, re-install a release-binary tool even when present (to refresh
+# to the latest version). Git-cloned tools are updated separately via pull_update.
+want() { [[ "$UPDATE" == true ]] || need "$1"; }
+
 OS="$(uname -s)"  # Linux | Darwin
 
 # --- Symlinks ---
@@ -71,6 +75,11 @@ if [[ "$OS" == "Darwin" ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
   elif [[ -x /usr/local/bin/brew ]]; then
     eval "$(/usr/local/bin/brew shellenv)"
+  fi
+
+  if [[ "$UPDATE" == true ]]; then
+    echo "[update] upgrading brew packages..."
+    brew update && brew upgrade
   fi
 
   pkgs=()
@@ -155,12 +164,12 @@ else
     fi
   }
 
-  if need starship; then
+  if want starship; then
     echo "[install] starship..."
     curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b "$BIN_DIR"
   fi
 
-  if need_nvim; then
+  if [[ "$UPDATE" == true ]] || need_nvim; then
     echo "[install] neovim (nightly)..."
     # nightly (0.12) is required by the main-branch nvim-treesitter config
     nvim_arch="x86_64"
@@ -176,44 +185,44 @@ else
     "$HOME/.fzf/install" --bin --no-update-rc --no-bash --no-zsh --no-fish
   fi
 
-  if need fnm; then
+  if want fnm; then
     echo "[install] fnm..."
     curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "$BIN_DIR" --skip-shell
   fi
 
   # Each block folds the release lookup into the guard: a failed gh_latest
   # (e.g. GitHub rate limit) skips just that tool instead of aborting the run.
-  if need rg && v=$(gh_latest BurntSushi/ripgrep); then
+  if want rg && v=$(gh_latest BurntSushi/ripgrep); then
     gh_tar rg "https://github.com/BurntSushi/ripgrep/releases/download/${v}/ripgrep-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1 || echo "[warn] rg install failed" >&2
   fi
-  if need fd && v=$(gh_latest sharkdp/fd); then
+  if want fd && v=$(gh_latest sharkdp/fd); then
     gh_tar fd "https://github.com/sharkdp/fd/releases/download/${v}/fd-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1 || echo "[warn] fd install failed" >&2
   fi
-  if need bat && v=$(gh_latest sharkdp/bat); then
+  if want bat && v=$(gh_latest sharkdp/bat); then
     gh_tar bat "https://github.com/sharkdp/bat/releases/download/${v}/bat-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1 || echo "[warn] bat install failed" >&2
   fi
-  if need delta && v=$(gh_latest dandavison/delta); then
+  if want delta && v=$(gh_latest dandavison/delta); then
     gh_tar delta "https://github.com/dandavison/delta/releases/download/${v}/delta-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1 || echo "[warn] delta install failed" >&2
   fi
-  if need zoxide && v=$(gh_latest ajeetdsouza/zoxide); then
+  if want zoxide && v=$(gh_latest ajeetdsouza/zoxide); then
     vn="${v#v}"
     gh_tar zoxide "https://github.com/ajeetdsouza/zoxide/releases/download/${v}/zoxide-${vn}-${ARCH}-unknown-linux-musl.tar.gz" || echo "[warn] zoxide install failed" >&2
   fi
-  if need eza && v=$(gh_latest eza-community/eza); then
+  if want eza && v=$(gh_latest eza-community/eza); then
     gh_tar eza "https://github.com/eza-community/eza/releases/download/${v}/eza_${ARCH}-unknown-linux-musl.tar.gz" || echo "[warn] eza install failed" >&2
   fi
-  if need lazygit && v=$(gh_latest jesseduffield/lazygit); then
+  if want lazygit && v=$(gh_latest jesseduffield/lazygit); then
     vn="${v#v}"
     lg_arch="x86_64"
     [[ "$ARCH" == "aarch64" ]] && lg_arch="arm64"
     gh_tar lazygit "https://github.com/jesseduffield/lazygit/releases/download/${v}/lazygit_${vn}_linux_${lg_arch}.tar.gz" || echo "[warn] lazygit install failed" >&2
   fi
-  if need sesh && v=$(gh_latest joshmedeski/sesh); then
+  if want sesh && v=$(gh_latest joshmedeski/sesh); then
     sesh_arch="x86_64"
     [[ "$ARCH" == "aarch64" ]] && sesh_arch="arm64"
     gh_tar sesh "https://github.com/joshmedeski/sesh/releases/download/${v}/sesh_Linux_${sesh_arch}.tar.gz" || echo "[warn] sesh install failed" >&2
   fi
-  if need direnv && v=$(gh_latest direnv/direnv); then
+  if want direnv && v=$(gh_latest direnv/direnv); then
     direnv_arch="amd64"
     [[ "$ARCH" == "aarch64" ]] && direnv_arch="arm64"
     echo "[install] direnv..."
@@ -223,14 +232,14 @@ else
       echo "[warn] direnv install failed" >&2
     fi
   fi
-  if need gh && v=$(gh_latest cli/cli); then
+  if want gh && v=$(gh_latest cli/cli); then
     vn="${v#v}"
     gh_arch="amd64"
     [[ "$ARCH" == "aarch64" ]] && gh_arch="arm64"
     gh_tar gh "https://github.com/cli/cli/releases/download/${v}/gh_${vn}_linux_${gh_arch}.tar.gz" 2 || echo "[warn] gh install failed" >&2
   fi
   # tree-sitter CLI: required by the main-branch nvim-treesitter to build parsers
-  if need tree-sitter && v=$(gh_latest tree-sitter/tree-sitter); then
+  if want tree-sitter && v=$(gh_latest tree-sitter/tree-sitter); then
     ts_arch="x64"
     [[ "$ARCH" == "aarch64" ]] && ts_arch="arm64"
     echo "[install] tree-sitter..."
@@ -248,6 +257,9 @@ fi
 if need claude; then
   echo "[install] Claude Code..."
   curl -fsSL https://claude.ai/install.sh | bash
+elif [[ "$UPDATE" == true ]]; then
+  echo "[update] Claude Code..."
+  claude update || true
 fi
 
 # fzf-git.sh
@@ -286,8 +298,9 @@ if command -v nvim >/dev/null 2>&1; then
   ts_install_parsers
 fi
 
-# Node LTS via fnm
-if command -v fnm >/dev/null 2>&1 && [[ -z "$(fnm ls 2>/dev/null | grep -v system || true)" ]]; then
+# Node LTS via fnm (install if absent; --update refreshes to the latest LTS)
+if command -v fnm >/dev/null 2>&1 \
+   && { [[ "$UPDATE" == true ]] || [[ -z "$(fnm ls 2>/dev/null | grep -v system || true)" ]]; }; then
   echo "[install] node (LTS via fnm)..."
   fnm install --lts
 fi
@@ -305,16 +318,18 @@ if [[ "$UPDATE" == true ]]; then
     fi
   }
   pull_update "$HOME/.fzf"           "fzf"
+  # rebuild the fzf binary after pulling the latest source
+  [[ -x "$HOME/.fzf/install" ]] && "$HOME/.fzf/install" --bin --no-update-rc --no-bash --no-zsh --no-fish
   pull_update "$HOME/.fzf-git.sh"    "fzf-git.sh"
   pull_update "$ZSH_PLUGINS/zsh-autosuggestions"     "zsh-autosuggestions"
   pull_update "$ZSH_PLUGINS/zsh-syntax-highlighting" "zsh-syntax-highlighting"
   pull_update "$ZSH_PLUGINS/fzf-tab"                 "fzf-tab"
 
-  # Re-sync neovim plugins
+  # Update installed treesitter parsers (the main flow already re-synced plugins)
   if command -v nvim >/dev/null 2>&1; then
-    echo "[update] neovim plugins..."
-    nvim --headless "+Lazy! sync" +qa || echo "[warn] neovim plugin sync had errors — run :Lazy sync in nvim" >&2
-    ts_install_parsers
+    echo "[update] treesitter parsers..."
+    nvim --headless -c "lua require('nvim-treesitter').update():wait(600000)" +qa \
+      || echo "[warn] treesitter parser update had errors" >&2
   fi
 fi
 
