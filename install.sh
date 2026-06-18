@@ -79,7 +79,7 @@ if [[ "$OS" == "Darwin" ]]; then
 
   if [[ "$UPDATE" == true ]]; then
     echo "[update] upgrading brew packages..."
-    brew update && brew upgrade
+    brew update && brew upgrade || echo "[warn] brew upgrade had errors" >&2
   fi
 
   pkgs=()
@@ -284,11 +284,14 @@ clone_plugin fzf-tab                 https://github.com/Aloxaf/fzf-tab.git
 
 # Compile all configured tree-sitter parsers synchronously so a fresh setup is
 # fully provisioned up front (the plugin otherwise installs them lazily on first
-# file open). Blocks until done; errors are non-fatal.
+# file open). On --update, also refresh installed parsers in the same nvim run.
+# Blocks until done; errors are non-fatal.
 ts_install_parsers() {
   echo "[install] treesitter parsers..."
-  nvim --headless -c "lua require('nvim-treesitter').install(require('config.ts_parsers')):wait(600000)" +qa \
-    || echo "[warn] treesitter parser install had errors — run :TSInstall in nvim" >&2
+  local lua="local ts = require('nvim-treesitter'); ts.install(require('config.ts_parsers')):wait(600000)"
+  [[ "$UPDATE" == true ]] && lua="$lua; ts.update():wait(600000)"
+  nvim --headless -c "lua $lua" +qa \
+    || echo "[warn] treesitter parser install/update had errors — run :TSInstall in nvim" >&2
 }
 
 # Neovim plugins (headless sync)
@@ -302,7 +305,7 @@ fi
 if command -v fnm >/dev/null 2>&1 \
    && { [[ "$UPDATE" == true ]] || [[ -z "$(fnm ls 2>/dev/null | grep -v system || true)" ]]; }; then
   echo "[install] node (LTS via fnm)..."
-  fnm install --lts
+  fnm install --lts || echo "[warn] node LTS update failed" >&2
 fi
 
 # --- Update git-cloned plugins ---
@@ -319,18 +322,15 @@ if [[ "$UPDATE" == true ]]; then
   }
   pull_update "$HOME/.fzf"           "fzf"
   # rebuild the fzf binary after pulling the latest source
-  [[ -x "$HOME/.fzf/install" ]] && "$HOME/.fzf/install" --bin --no-update-rc --no-bash --no-zsh --no-fish
+  if [[ -x "$HOME/.fzf/install" ]]; then
+    "$HOME/.fzf/install" --bin --no-update-rc --no-bash --no-zsh --no-fish \
+      || echo "[warn] fzf rebuild failed" >&2
+  fi
   pull_update "$HOME/.fzf-git.sh"    "fzf-git.sh"
   pull_update "$ZSH_PLUGINS/zsh-autosuggestions"     "zsh-autosuggestions"
   pull_update "$ZSH_PLUGINS/zsh-syntax-highlighting" "zsh-syntax-highlighting"
   pull_update "$ZSH_PLUGINS/fzf-tab"                 "fzf-tab"
-
-  # Update installed treesitter parsers (the main flow already re-synced plugins)
-  if command -v nvim >/dev/null 2>&1; then
-    echo "[update] treesitter parsers..."
-    nvim --headless -c "lua require('nvim-treesitter').update():wait(600000)" +qa \
-      || echo "[warn] treesitter parser update had errors" >&2
-  fi
+  # treesitter parsers are installed + updated by ts_install_parsers in the main flow
 fi
 
 echo ""
