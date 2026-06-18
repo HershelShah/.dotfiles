@@ -2,7 +2,7 @@
 # Install dotfiles: symlink configs + install missing tools
 # Usage:
 #   ./install.sh            # symlink dotfiles + install tools
-#   ./install.sh --no-link  # install tools only (for Docker)
+#   ./install.sh --no-link  # install tools only, skip symlinks (configs already in place)
 #   ./install.sh --update   # update git-cloned plugins and tools
 set -euo pipefail
 
@@ -25,7 +25,13 @@ OS="$(uname -s)"  # Linux | Darwin
 if [[ "$NO_LINK" == false ]]; then
   link() {
     local src="$DOTFILES/$1" dest="$HOME/$1"
-    rm -rf "$dest"
+    # Back up a real (non-symlink) target so we never destroy an existing config.
+    if [[ -e "$dest" && ! -L "$dest" ]]; then
+      local bak="$dest.bak-$(date +%Y%m%d%H%M%S)"
+      echo "  backing up $dest -> $bak"
+      mv "$dest" "$bak"
+    fi
+    rm -rf "$dest"  # only ever removes a symlink now
     mkdir -p "$(dirname "$dest")"
     ln -sf "$src" "$dest"
     echo "  $1 -> $src"
@@ -60,7 +66,10 @@ if [[ "$OS" == "Darwin" ]]; then
 
   pkgs=()
   need starship  && pkgs+=(starship)
-  need nvim      && pkgs+=(neovim)
+  # NOTE: brew installs stable neovim; the main-branch treesitter config needs
+  # 0.12 nightly — on macOS run `brew install neovim --HEAD` if treesitter breaks.
+  need nvim         && pkgs+=(neovim)
+  need tree-sitter  && pkgs+=(tree-sitter)
   need fzf       && pkgs+=(fzf)
   need fnm       && pkgs+=(fnm)
   need rg        && pkgs+=(ripgrep)
@@ -101,32 +110,53 @@ else
     fi
   done
 
-  # Helper: get latest GitHub release tag
+  # Helper: get latest GitHub release tag (non-zero on failure, e.g. rate limit)
   gh_latest() {
-    curl -sSf "https://api.github.com/repos/$1/releases/latest" | grep '"tag_name"' | cut -d'"' -f4
+    local tag
+    tag=$(curl -sSf "https://api.github.com/repos/$1/releases/latest" | grep '"tag_name"' | cut -d'"' -f4)
+    if [[ -z "$tag" ]]; then
+      echo "[warn] could not fetch latest release for $1 (rate limited?)" >&2
+      return 1
+    fi
+    printf '%s\n' "$tag"
   }
 
-  # Helper: download and extract a binary from a GitHub release tarball
+  # Helper: download and extract a binary from a GitHub release tarball.
+  # No-strip case extracts to a temp dir and moves only the binary, so extra
+  # files (completions/, man/, LICENSE) never pollute $BIN_DIR and a nested or
+  # missing binary is caught instead of silently leaving the tool off PATH.
   gh_tar() {
     local bin="$1" url="$2" strip="${3:-0}"
     echo "[install] $bin..."
     if [[ "$strip" -gt 0 ]]; then
       curl -sSfL "$url" | tar xz --strip-components="$strip" -C "$BIN_DIR" --wildcards "*/$bin"
     else
-      curl -sSfL "$url" | tar xz -C "$BIN_DIR"
+      local tmp found
+      tmp=$(mktemp -d)
+      curl -sSfL "$url" | tar xz -C "$tmp"
+      found=$(find "$tmp" -type f -name "$bin" -print -quit)
+      if [[ -z "$found" ]]; then
+        echo "[error] $bin not found in tarball" >&2
+        rm -rf "$tmp"
+        return 1
+      fi
+      mv "$found" "$BIN_DIR/$bin"
+      chmod +x "$BIN_DIR/$bin"
+      rm -rf "$tmp"
     fi
   }
 
   if need starship; then
     echo "[install] starship..."
-    curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$BIN_DIR"
+    curl -fsSL https://starship.rs/install.sh | sh -s -- -y -b "$BIN_DIR"
   fi
 
   if need nvim; then
-    echo "[install] neovim..."
+    echo "[install] neovim (nightly)..."
+    # nightly (0.12) is required by the main-branch nvim-treesitter config
     nvim_arch="x86_64"
     [[ "$ARCH" == "aarch64" ]] && nvim_arch="arm64"
-    curl -sSfL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${nvim_arch}.tar.gz" \
+    curl -sSfL "https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-${nvim_arch}.tar.gz" \
       | tar xz -C "$HOME/.local"
     ln -sf "$HOME/.local/nvim-linux-${nvim_arch}/bin/nvim" "$BIN_DIR/nvim"
   fi
@@ -142,55 +172,66 @@ else
     curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir "$BIN_DIR" --skip-shell
   fi
 
-  if need rg; then
-    v=$(gh_latest BurntSushi/ripgrep)
-    gh_tar rg "https://github.com/BurntSushi/ripgrep/releases/download/${v}/ripgrep-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1
+  # Each block folds the release lookup into the guard: a failed gh_latest
+  # (e.g. GitHub rate limit) skips just that tool instead of aborting the run.
+  if need rg && v=$(gh_latest BurntSushi/ripgrep); then
+    gh_tar rg "https://github.com/BurntSushi/ripgrep/releases/download/${v}/ripgrep-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1 || echo "[warn] rg install failed" >&2
   fi
-  if need fd; then
-    v=$(gh_latest sharkdp/fd)
-    gh_tar fd "https://github.com/sharkdp/fd/releases/download/${v}/fd-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1
+  if need fd && v=$(gh_latest sharkdp/fd); then
+    gh_tar fd "https://github.com/sharkdp/fd/releases/download/${v}/fd-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1 || echo "[warn] fd install failed" >&2
   fi
-  if need bat; then
-    v=$(gh_latest sharkdp/bat)
-    gh_tar bat "https://github.com/sharkdp/bat/releases/download/${v}/bat-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1
+  if need bat && v=$(gh_latest sharkdp/bat); then
+    gh_tar bat "https://github.com/sharkdp/bat/releases/download/${v}/bat-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1 || echo "[warn] bat install failed" >&2
   fi
-  if need delta; then
-    v=$(gh_latest dandavison/delta)
-    gh_tar delta "https://github.com/dandavison/delta/releases/download/${v}/delta-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1
+  if need delta && v=$(gh_latest dandavison/delta); then
+    gh_tar delta "https://github.com/dandavison/delta/releases/download/${v}/delta-${v}-${ARCH}-unknown-linux-musl.tar.gz" 1 || echo "[warn] delta install failed" >&2
   fi
-  if need zoxide; then
-    v=$(gh_latest ajeetdsouza/zoxide); vn="${v#v}"
-    gh_tar zoxide "https://github.com/ajeetdsouza/zoxide/releases/download/${v}/zoxide-${vn}-${ARCH}-unknown-linux-musl.tar.gz"
+  if need zoxide && v=$(gh_latest ajeetdsouza/zoxide); then
+    vn="${v#v}"
+    gh_tar zoxide "https://github.com/ajeetdsouza/zoxide/releases/download/${v}/zoxide-${vn}-${ARCH}-unknown-linux-musl.tar.gz" || echo "[warn] zoxide install failed" >&2
   fi
-  if need eza; then
-    v=$(gh_latest eza-community/eza)
-    gh_tar eza "https://github.com/eza-community/eza/releases/download/${v}/eza_${ARCH}-unknown-linux-musl.tar.gz"
+  if need eza && v=$(gh_latest eza-community/eza); then
+    gh_tar eza "https://github.com/eza-community/eza/releases/download/${v}/eza_${ARCH}-unknown-linux-musl.tar.gz" || echo "[warn] eza install failed" >&2
   fi
-  if need lazygit; then
-    v=$(gh_latest jesseduffield/lazygit); vn="${v#v}"
+  if need lazygit && v=$(gh_latest jesseduffield/lazygit); then
+    vn="${v#v}"
     lg_arch="x86_64"
     [[ "$ARCH" == "aarch64" ]] && lg_arch="arm64"
-    gh_tar lazygit "https://github.com/jesseduffield/lazygit/releases/download/${v}/lazygit_${vn}_linux_${lg_arch}.tar.gz"
+    gh_tar lazygit "https://github.com/jesseduffield/lazygit/releases/download/${v}/lazygit_${vn}_linux_${lg_arch}.tar.gz" || echo "[warn] lazygit install failed" >&2
   fi
-  if need sesh; then
-    v=$(gh_latest joshmedeski/sesh)
+  if need sesh && v=$(gh_latest joshmedeski/sesh); then
     sesh_arch="x86_64"
     [[ "$ARCH" == "aarch64" ]] && sesh_arch="arm64"
-    gh_tar sesh "https://github.com/joshmedeski/sesh/releases/download/${v}/sesh_Linux_${sesh_arch}.tar.gz"
+    gh_tar sesh "https://github.com/joshmedeski/sesh/releases/download/${v}/sesh_Linux_${sesh_arch}.tar.gz" || echo "[warn] sesh install failed" >&2
   fi
-  if need direnv; then
-    v=$(gh_latest direnv/direnv)
+  if need direnv && v=$(gh_latest direnv/direnv); then
     direnv_arch="amd64"
     [[ "$ARCH" == "aarch64" ]] && direnv_arch="arm64"
     echo "[install] direnv..."
-    curl -sSfL "https://github.com/direnv/direnv/releases/download/${v}/direnv.linux-${direnv_arch}" -o "$BIN_DIR/direnv"
-    chmod +x "$BIN_DIR/direnv"
+    if curl -sSfL "https://github.com/direnv/direnv/releases/download/${v}/direnv.linux-${direnv_arch}" -o "$BIN_DIR/direnv"; then
+      chmod +x "$BIN_DIR/direnv"
+    else
+      echo "[warn] direnv install failed" >&2
+    fi
   fi
-  if need gh; then
-    v=$(gh_latest cli/cli); vn="${v#v}"
+  if need gh && v=$(gh_latest cli/cli); then
+    vn="${v#v}"
     gh_arch="amd64"
     [[ "$ARCH" == "aarch64" ]] && gh_arch="arm64"
-    gh_tar gh "https://github.com/cli/cli/releases/download/${v}/gh_${vn}_linux_${gh_arch}.tar.gz" 2
+    gh_tar gh "https://github.com/cli/cli/releases/download/${v}/gh_${vn}_linux_${gh_arch}.tar.gz" 2 || echo "[warn] gh install failed" >&2
+  fi
+  # tree-sitter CLI: required by the main-branch nvim-treesitter to build parsers
+  if need tree-sitter && v=$(gh_latest tree-sitter/tree-sitter); then
+    ts_arch="x64"
+    [[ "$ARCH" == "aarch64" ]] && ts_arch="arm64"
+    echo "[install] tree-sitter..."
+    if curl -sSfL "https://github.com/tree-sitter/tree-sitter/releases/download/${v}/tree-sitter-linux-${ts_arch}.gz" -o "$BIN_DIR/tree-sitter.gz" \
+       && gzip -df "$BIN_DIR/tree-sitter.gz"; then
+      chmod +x "$BIN_DIR/tree-sitter"
+    else
+      echo "[warn] tree-sitter install failed" >&2
+      rm -f "$BIN_DIR/tree-sitter.gz" "$BIN_DIR/tree-sitter"
+    fi
   fi
 fi
 
@@ -220,10 +261,20 @@ clone_plugin zsh-autosuggestions     https://github.com/zsh-users/zsh-autosugges
 clone_plugin zsh-syntax-highlighting https://github.com/zsh-users/zsh-syntax-highlighting.git
 clone_plugin fzf-tab                 https://github.com/Aloxaf/fzf-tab.git
 
+# Compile all configured tree-sitter parsers synchronously so a fresh setup is
+# fully provisioned up front (the plugin otherwise installs them lazily on first
+# file open). Blocks until done; errors are non-fatal.
+ts_install_parsers() {
+  echo "[install] treesitter parsers..."
+  nvim --headless -c "lua require('nvim-treesitter').install(require('config.ts_parsers')):wait(600000)" +qa \
+    || echo "[warn] treesitter parser install had errors — run :TSInstall in nvim" >&2
+}
+
 # Neovim plugins (headless sync)
 if command -v nvim >/dev/null 2>&1; then
   echo "[install] neovim plugins..."
-  nvim --headless "+Lazy! sync" +qa 2>/dev/null || true
+  nvim --headless "+Lazy! sync" +qa || echo "[warn] neovim plugin sync had errors — run :Lazy sync in nvim" >&2
+  ts_install_parsers
 fi
 
 # Node LTS via fnm
@@ -253,7 +304,8 @@ if [[ "$UPDATE" == true ]]; then
   # Re-sync neovim plugins
   if command -v nvim >/dev/null 2>&1; then
     echo "[update] neovim plugins..."
-    nvim --headless "+Lazy! sync" +qa 2>/dev/null || true
+    nvim --headless "+Lazy! sync" +qa || echo "[warn] neovim plugin sync had errors — run :Lazy sync in nvim" >&2
+    ts_install_parsers
   fi
 fi
 

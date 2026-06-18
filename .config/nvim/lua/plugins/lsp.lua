@@ -14,7 +14,7 @@ return {
 				"lua_ls",
 				"pyright",
 			},
-			automatic_installation = true,
+			automatic_enable = false,
 		})
 
 		-- LSP keymaps (set on attach via LspAttach autocmd)

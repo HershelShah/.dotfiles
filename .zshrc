@@ -10,10 +10,10 @@ bindkey -e
 
 # Completions (regenerate cache once daily)
 autoload -Uz compinit
-if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
-  compinit
+if [[ -f ~/.zcompdump && -z ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit -C  # dump exists and is <24h old: trust the cache
 else
-  compinit -C
+  compinit     # dump missing or >24h old: full secure rebuild
 fi
 
 # Colored man pages (replaces OMZ colored-man-pages)

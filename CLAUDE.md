@@ -5,7 +5,7 @@ Personal dotfiles managing neovim, tmux, zsh, kitty, starship, and git configs.
 ## Structure
 
 - `install.sh` — idempotent installer: symlinks configs + installs tools
-  - `--no-link` skips symlinks (for Docker/Codespaces)
+  - `--no-link` skips symlinks (when configs are already at their target paths; the Dockerfile runs the linking install instead)
   - `--update` pulls latest for git-cloned plugins
 - `.config/nvim/` — Neovim config (lazy.nvim, requires nvim 0.11+)
 - `.config/kitty/` — Kitty terminal config (Tokyo Night theme)

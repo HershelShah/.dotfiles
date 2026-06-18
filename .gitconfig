@@ -14,7 +14,7 @@
 	line-numbers = true
 
 [init]
-	defaultBranch = main
+	defaultBranch = master
 
 [push]
 	autoSetupRemote = true
