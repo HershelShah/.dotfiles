@@ -54,3 +54,17 @@ autocmd("FileType", {
 		vim.keymap.set("n", "q", "<cmd>close<CR>", { buffer = event.buf, silent = true })
 	end,
 })
+
+-- Reload files changed on disk (e.g. Claude's auto-accepted edits) so the buffer
+-- and gitsigns reflect them without a manual :e. autoread only reloads on its own
+-- triggers, so nudge it with :checktime. TermLeave fires when you <C-hjkl> out of
+-- the Claude pane, refreshing whatever it just edited.
+vim.o.autoread = true
+autocmd({ "FocusGained", "BufEnter", "CursorHold", "TermLeave" }, {
+	group = augroup("AutoReadCheck", { clear = true }),
+	callback = function()
+		if vim.fn.mode() ~= "c" then
+			vim.cmd("checktime")
+		end
+	end,
+})

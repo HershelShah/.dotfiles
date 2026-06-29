@@ -20,5 +20,6 @@ return {
 		{ "<leader>fk", "<cmd>FzfLua keymaps<cr>", desc = "Keymaps" },
 		{ "<leader>gb", "<cmd>FzfLua git_branches<cr>", desc = "Git branches" },
 		{ "<leader>gc", "<cmd>FzfLua git_commits<cr>", desc = "Git commits" },
+		{ "<leader>gs", "<cmd>FzfLua git_status<cr>", desc = "Git status (changed files)" },
 	},
 }
