@@ -59,5 +59,11 @@ map("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
 map("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 
+-- Same nav from terminal-mode, so <C-hjkl> escapes the Claude Code pane too
+map("t", "<C-h>", [[<C-\><C-n><C-w>h]], { desc = "Go to left window" })
+map("t", "<C-j>", [[<C-\><C-n><C-w>j]], { desc = "Go to lower window" })
+map("t", "<C-k>", [[<C-\><C-n><C-w>k]], { desc = "Go to upper window" })
+map("t", "<C-l>", [[<C-\><C-n><C-w>l]], { desc = "Go to right window" })
+
 -- Save with Ctrl-S (previously mini.basics)
 map({ "n", "i", "x" }, "<C-s>", "<cmd>w<CR>", { desc = "Save" })
